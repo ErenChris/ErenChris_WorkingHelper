@@ -49,7 +49,7 @@ namespace WorkingHelper
             //    dailyReportWorkBook.Write(FS);
             //}
 
-            Console.WriteLine("Done!");
+            //Console.WriteLine("Done!");
 
             //test txt read function
             //ETextReader TR = new ETextReader(@"D:\Desktop\ALL.txt");
