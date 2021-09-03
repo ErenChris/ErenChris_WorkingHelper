@@ -10,6 +10,7 @@ using WorkingHelper.Handler;
 using HtmlAgilityPack;
 using WorkingHelper.Models;
 using System.Collections.Generic;
+using WorkingHelper.ExcelHandler;
 
 namespace WorkingHelper
 {
@@ -43,13 +44,18 @@ namespace WorkingHelper
             //IRow row = sheet.CreateRow(5);
             //ICell cell = row.CreateCell(3);
             //cell.SetCellValue("测试2");
+            string FileName = @"D:\Desktop\Template.xlsx";
+
+            ExcelOpreator excelOpreator = new ExcelOpreator(FileName);
+            //excelOpreator.ReviseExcelValue(ExcelOpreator.SheetEnum.yieldSheet, 10, 3, "ErenChris");
+            string result = excelOpreator.GetExcelValueFromMergeCells(ExcelOpreator.SheetEnum.retestSheet, 5, 2);
 
             //using (FileStream FS = new FileStream(Path, FileMode.Create, FileAccess.Write))
             //{
             //    dailyReportWorkBook.Write(FS);
             //}
 
-            //Console.WriteLine("Done!");
+            Console.WriteLine(result);
 
             //test txt read function
             //ETextReader TR = new ETextReader(@"D:\Desktop\ALL.txt");
@@ -61,6 +67,7 @@ namespace WorkingHelper
             //node = HtmlDocumentContainer.DocumentNode.SelectSingleNode(xPath);
             //string test = node.Attributes["value"].Value;
             //Console.WriteLine(test);
+
 
 
             Console.ReadLine();

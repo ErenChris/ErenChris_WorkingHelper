@@ -16,7 +16,14 @@ namespace WorkingHelper.Handler
         public ETextReader(string Path)
         {
             filePath = Path;
-            SR = new StreamReader(filePath);
+            try
+            {
+                SR = new StreamReader(filePath);
+            }
+            catch
+            {
+                Console.WriteLine("No such file!");
+            }
         }
 
         public string GatTextFile()
