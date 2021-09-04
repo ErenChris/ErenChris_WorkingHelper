@@ -11,6 +11,10 @@ namespace WorkingHelper.ExcelHandler
     class ExcelOpreator
     {
         private string _filePath { get; set; }
+        private int GCindex = 3;
+        private int FFindex = 4;
+        private int GTindex = 5;
+        private int GT2index = 6;
 
         public enum SheetEnum
         {
@@ -100,6 +104,23 @@ namespace WorkingHelper.ExcelHandler
                     result = temp;
                 }
             }
+
+            return result;
+        }
+
+        public int GetLastRowIndex(SheetEnum sheetEnum)
+        {
+            XSSFWorkbook wb = null;
+            int result;
+
+            using (FileStream fs = File.Open(_filePath, FileMode.Open, FileAccess.Read))
+            {
+                wb = new XSSFWorkbook(fs);
+            }
+
+            ISheet sheet = wb.GetSheetAt((int)sheetEnum);
+
+            result = sheet.LastRowNum;
 
             return result;
         }

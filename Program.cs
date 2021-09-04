@@ -18,11 +18,12 @@ namespace WorkingHelper
     {
         static void Main(string[] args)
         {
+            string FileName = @"D:\Desktop\Template.xlsx";
+
             List<RetestUnitModel> GCRetestUnits = new List<RetestUnitModel>();
             List<RetestUnitModel> FFRetestUnits = new List<RetestUnitModel>();
             List<RetestUnitModel> GTRetestUnits = new List<RetestUnitModel>();
             List<RetestUnitModel> GT2RetestUnits = new List<RetestUnitModel>();
-
             GCRetestUnits = HTMLToModelOfRetest.GetRetestUnitList(GCRetestUnits, "GC");
             FFRetestUnits = HTMLToModelOfRetest.GetRetestUnitList(FFRetestUnits, "FF");
             GTRetestUnits = HTMLToModelOfRetest.GetRetestUnitList(GTRetestUnits, "GT");
@@ -31,6 +32,7 @@ namespace WorkingHelper
             ExcelDataFromSummaryHTMLModel excelDataModel_get;
             IFillingExcelDataModelFromSummaryHTML fillingExcelDataModelFromHTML = new FillingExcelDataModelFromSummaryHTML();
             excelDataModel_get = fillingExcelDataModelFromHTML.StartCheckStation();
+            RowCounter rowCounter = new RowCounter(GCRetestUnits, FFRetestUnits, GTRetestUnits, GT2RetestUnits, excelDataModel_get);
 
             //string Path = @"D:\Desktop\111.xlsx";
             //HtmlDocument HtmlDocumentContainer = new HtmlDocument();
@@ -44,18 +46,19 @@ namespace WorkingHelper
             //IRow row = sheet.CreateRow(5);
             //ICell cell = row.CreateCell(3);
             //cell.SetCellValue("测试2");
-            string FileName = @"D:\Desktop\Template.xlsx";
+
 
             ExcelOpreator excelOpreator = new ExcelOpreator(FileName);
             //excelOpreator.ReviseExcelValue(ExcelOpreator.SheetEnum.yieldSheet, 10, 3, "ErenChris");
-            string result = excelOpreator.GetExcelValueFromMergeCells(ExcelOpreator.SheetEnum.retestSheet, 5, 2);
+            int rowsNum = excelOpreator.GetLastRowIndex(ExcelOpreator.SheetEnum.yieldSheet);
+
 
             //using (FileStream FS = new FileStream(Path, FileMode.Create, FileAccess.Write))
             //{
             //    dailyReportWorkBook.Write(FS);
             //}
 
-            Console.WriteLine(result);
+            Console.WriteLine(rowsNum);
 
             //test txt read function
             //ETextReader TR = new ETextReader(@"D:\Desktop\ALL.txt");

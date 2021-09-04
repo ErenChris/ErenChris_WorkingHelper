@@ -90,6 +90,7 @@
     <Compile Include="Models\RetestUnitModel.cs" />
     <Compile Include="Models\ExcelDataFromSummaryHTMLModel.cs" />
     <Compile Include="Models\InformationForWebBrowser.cs" />
+    <Compile Include="Models\RowCounter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
