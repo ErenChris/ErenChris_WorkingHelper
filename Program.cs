@@ -18,7 +18,9 @@ namespace WorkingHelper
     {
         static void Main(string[] args)
         {
-            string FileName = @"D:\Desktop\Template.xlsx";
+            string dir = AppDomain.CurrentDomain.BaseDirectory;
+
+            string FileName = dir + @"Resourse\Template.xlsx";
 
             List<RetestUnitModel> GCRetestUnits = new List<RetestUnitModel>();
             List<RetestUnitModel> FFRetestUnits = new List<RetestUnitModel>();
@@ -52,13 +54,13 @@ namespace WorkingHelper
             //excelOpreator.ReviseExcelValue(ExcelOpreator.SheetEnum.yieldSheet, 10, 3, "ErenChris");
             int rowsNum = excelOpreator.GetLastRowIndex(ExcelOpreator.SheetEnum.yieldSheet);
 
-
+            excelOpreator.YieldSheetFilling(rowCounter, excelDataModel_get, GCRetestUnits, FFRetestUnits, GTRetestUnits, GT2RetestUnits);
             //using (FileStream FS = new FileStream(Path, FileMode.Create, FileAccess.Write))
             //{
             //    dailyReportWorkBook.Write(FS);
             //}
 
-            Console.WriteLine(rowsNum);
+            Console.WriteLine("Done!");
 
             //test txt read function
             //ETextReader TR = new ETextReader(@"D:\Desktop\ALL.txt");

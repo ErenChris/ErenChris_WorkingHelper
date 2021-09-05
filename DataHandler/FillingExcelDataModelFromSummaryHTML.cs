@@ -13,7 +13,8 @@ namespace WorkingHelper.Handler
         HtmlDocument HtmlDocument_Summary = new HtmlDocument();
         HtmlNode node;
         ExcelDataFromSummaryHTMLModel excelDataModel = new ExcelDataFromSummaryHTMLModel();
-        ETextReader TR_Summary = new ETextReader(@"D:\Desktop\ALL.txt");
+
+        ETextReader TR_Summary = new ETextReader(@".\Resourse\ALL.txt");
 
         string[] xPath = new string[] {
             "//*[@id=\"analysis-drop-container\"]/div/div[3]/div/div[2]/div/table/tbody/tr[1]/td[1]",

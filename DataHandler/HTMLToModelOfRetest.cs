@@ -19,19 +19,19 @@ namespace WorkingHelper.Handler
 
             if (modelType == "GC")
             {
-                readPath = @"D:\Desktop\GCRetest.txt";
+                readPath = @".\Resourse\GCRetest.txt";
             }
             else if (modelType == "FF")
             {
-                readPath = @"D:\Desktop\FFRetest.txt";
+                readPath = @".\Resourse\FFRetest.txt";
             }
             else if (modelType == "GT")
             {
-                readPath = @"D:\Desktop\GTRetest.txt";
+                readPath = @".\Resourse\GTRetest.txt";
             }
             else if (modelType == "GT2")
             {
-                readPath = @"D:\Desktop\GT2Retest.txt";
+                readPath = @".\Resourse\GT2Retest.txt";
             }
             else
             {
