@@ -125,10 +125,10 @@ namespace WorkingHelper.ExcelHandler
         {
             ISheet sheet = wb.GetSheetAt((int)SheetEnum.yieldSheet);
 
-            rowCounter.GCFailCount = 3; // should be deleted
-            rowCounter.FFFailCount = 2;
-            rowCounter.GTFailCount = 4;
-            rowCounter.GT2FailCount = 5;
+            //rowCounter.GCFailCount = 3; // should be deleted
+            //rowCounter.FFFailCount = 2;
+            //rowCounter.GTFailCount = 4;
+            //rowCounter.GT2FailCount = 5;
 
             if ((rowCounter.GCFailCount == 0) || (rowCounter.GCFailCount == 1))
             {
