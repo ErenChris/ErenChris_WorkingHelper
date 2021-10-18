@@ -11,7 +11,12 @@ namespace WorkingHelper.Handler
     public static class HTMLToModelOfRetest
     {
 
-
+        /// <summary>
+        /// 获取重测机台数据List
+        /// </summary>
+        /// <param name="Entity">数据容器</param>
+        /// <param name="modelType">工站类型</param>
+        /// <returns></returns>
         public static List<RetestUnitModel> GetRetestUnitList(List<RetestUnitModel> Entity, string modelType)
         {
             HtmlDocument htmlDocument_Retest = new HtmlDocument();

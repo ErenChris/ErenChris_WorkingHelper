@@ -27,6 +27,10 @@ namespace WorkingHelper.Handler
         string PassCountXPath = "/div/div[4]";
         string RetestCountXPath = "/div/div[2]";
 
+        /// <summary>
+        /// 检查工站是否匹配，若匹配则执行填充数据操作
+        /// </summary>
+        /// <returns></returns>
         public ExcelDataFromSummaryHTMLModel StartCheckStation()
         {
             string result = TR_Summary.GatTextFile();
@@ -51,6 +55,10 @@ namespace WorkingHelper.Handler
             
         //}
 
+        /// <summary>
+        /// 填充GC数据
+        /// </summary>
+        /// <param name="DataPath"></param>
         private void FillingGCData(string DataPath)
         {
             string HTMLOfAllYieldPath = TextAndXpathHandler.ChangeToChildXPath(DataPath, 2);
@@ -66,6 +74,10 @@ namespace WorkingHelper.Handler
             excelDataModel.RetestSheet_GC_RetestCount = node.Attributes["data-value"].Value;
         }
 
+        /// <summary>
+        /// 填充FF数据
+        /// </summary>
+        /// <param name="DataPath"></param>
         private void FillingFFData(string DataPath)
         {
             string HTMLOfAllYieldPath = TextAndXpathHandler.ChangeToChildXPath(DataPath, 2);
@@ -81,6 +93,10 @@ namespace WorkingHelper.Handler
             excelDataModel.RetestSheet_FF_RetestCount = node.Attributes["data-value"].Value;
         }
 
+        /// <summary>
+        /// 填充GT数据
+        /// </summary>
+        /// <param name="DataPath"></param>
         private void FillingGTData(string DataPath)
         {
             string HTMLOfAllYieldPath = TextAndXpathHandler.ChangeToChildXPath(DataPath, 2);
@@ -96,6 +112,10 @@ namespace WorkingHelper.Handler
             excelDataModel.RetestSheet_GT_RetestCount = node.Attributes["data-value"].Value;
         }
 
+        /// <summary>
+        /// 填充GT2数据
+        /// </summary>
+        /// <param name="DataPath"></param>
         private void FillingGT2Data(string DataPath)
         {
             string HTMLOfAllYieldPath = TextAndXpathHandler.ChangeToChildXPath(DataPath, 2);

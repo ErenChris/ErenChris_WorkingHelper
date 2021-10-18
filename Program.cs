@@ -18,22 +18,27 @@ namespace WorkingHelper
     {
         static void Main(string[] args)
         {
+            //获取当前工作路径
             string dir = AppDomain.CurrentDomain.BaseDirectory;
-
+            //被操作Excel文档路径名
             string FileName = dir + @"Resourse\Template.xlsx";
 
+            //初始化数据容器List
             List<RetestUnitModel> GCRetestUnits = new List<RetestUnitModel>();
             List<RetestUnitModel> FFRetestUnits = new List<RetestUnitModel>();
             List<RetestUnitModel> GTRetestUnits = new List<RetestUnitModel>();
             List<RetestUnitModel> GT2RetestUnits = new List<RetestUnitModel>();
+            //获取重测机台数据存储于数据容器中
             GCRetestUnits = HTMLToModelOfRetest.GetRetestUnitList(GCRetestUnits, "GC");
             FFRetestUnits = HTMLToModelOfRetest.GetRetestUnitList(FFRetestUnits, "FF");
             GTRetestUnits = HTMLToModelOfRetest.GetRetestUnitList(GTRetestUnits, "GT");
             GT2RetestUnits = HTMLToModelOfRetest.GetRetestUnitList(GT2RetestUnits, "GT2");
 
+            //获取Summary界面数据
             ExcelDataFromSummaryHTMLModel excelDataModel_get;
             IFillingExcelDataModelFromSummaryHTML fillingExcelDataModelFromHTML = new FillingExcelDataModelFromSummaryHTML();
             excelDataModel_get = fillingExcelDataModelFromHTML.StartCheckStation();
+            //读取重测数据，生成Excel时使用
             RowCounter rowCounter = new RowCounter(GCRetestUnits, FFRetestUnits, GTRetestUnits, GT2RetestUnits, excelDataModel_get);
 
             //string Path = @"D:\Desktop\111.xlsx";
@@ -49,7 +54,7 @@ namespace WorkingHelper
             //ICell cell = row.CreateCell(3);
             //cell.SetCellValue("测试2");
 
-
+            //初始化ExcelOpreator对象
             ExcelOpreator excelOpreator = new ExcelOpreator(FileName);
             //excelOpreator.ReviseExcelValue(ExcelOpreator.SheetEnum.yieldSheet, 10, 3, "ErenChris");
             int rowsNum = excelOpreator.GetLastRowIndex(ExcelOpreator.SheetEnum.yieldSheet);
@@ -72,8 +77,6 @@ namespace WorkingHelper
             //node = HtmlDocumentContainer.DocumentNode.SelectSingleNode(xPath);
             //string test = node.Attributes["value"].Value;
             //Console.WriteLine(test);
-
-
 
             Console.ReadLine();
         }

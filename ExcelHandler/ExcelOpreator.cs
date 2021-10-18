@@ -121,6 +121,12 @@ namespace WorkingHelper.ExcelHandler
             return result;
         }
 
+        /// <summary>
+        /// 填充良率列表数据
+        /// </summary>
+        /// <param name="rowCounter"></param>
+        /// <param name="excelDataModel_get"></param>
+        /// <param name="retestUnitModels"></param>
         public void YieldSheetFilling(RowCounter rowCounter, ExcelDataFromSummaryHTMLModel excelDataModel_get, params List<RetestUnitModel>[] retestUnitModels)
         {
             ISheet sheet = wb.GetSheetAt((int)SheetEnum.yieldSheet);
