@@ -126,7 +126,8 @@
     <Compile Include="DataHandler\TextAndXpathHandler.cs" />
     <Compile Include="DataHandler\TextReader.cs" />
     <Compile Include="DataHandler\WebHandler.cs" />
-    <Compile Include="ExcelHandler\ExcelOpreator.cs" />
+    <Compile Include="ExcelHandler\RetestSheetExcelOperator.cs" />
+    <Compile Include="ExcelHandler\YieldSheetExcelOpreator.cs" />
     <Compile Include="Models\RetestUnitModel.cs" />
     <Compile Include="Models\ExcelDataFromSummaryHTMLModel.cs" />
     <Compile Include="Models\InformationForWebBrowser.cs" />

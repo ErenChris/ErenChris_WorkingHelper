@@ -55,9 +55,9 @@ namespace WorkingHelper
             //cell.SetCellValue("测试2");
 
             //初始化ExcelOpreator对象
-            ExcelOpreator excelOpreator = new ExcelOpreator(FileName);
+            YieldSheetExcelOpreator excelOpreator = new YieldSheetExcelOpreator(FileName);
             //excelOpreator.ReviseExcelValue(ExcelOpreator.SheetEnum.yieldSheet, 10, 3, "ErenChris");
-            int rowsNum = excelOpreator.GetLastRowIndex(ExcelOpreator.SheetEnum.yieldSheet);
+            int rowsNum = excelOpreator.GetLastRowIndex(YieldSheetExcelOpreator.SheetEnum.yieldSheet);
 
             excelOpreator.YieldSheetFilling(rowCounter, excelDataModel_get, GCRetestUnits, FFRetestUnits, GTRetestUnits, GT2RetestUnits);
             //using (FileStream FS = new FileStream(Path, FileMode.Create, FileAccess.Write))

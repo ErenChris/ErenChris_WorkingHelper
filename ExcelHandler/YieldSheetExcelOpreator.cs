@@ -11,7 +11,7 @@ using System;
 
 namespace WorkingHelper.ExcelHandler
 {
-    class ExcelOpreator
+    class YieldSheetExcelOpreator
     {
         private string _filePath { get; set; }
         private int GCindex = 3;
@@ -27,7 +27,7 @@ namespace WorkingHelper.ExcelHandler
             summarySheet = 3
         }
 
-        public ExcelOpreator(string filePath)
+        public YieldSheetExcelOpreator(string filePath)
         {
             _filePath = filePath;
 
@@ -304,58 +304,7 @@ namespace WorkingHelper.ExcelHandler
             }
         }
 
-        public void RetestSheetFilling(RowCounter rowCounter, ExcelDataFromSummaryHTMLModel excelDataModel_get, params List<RetestUnitModel>[] retestUnitModels)
-        {
-            ISheet sheet = wb.GetSheetAt((int)SheetEnum.retestSheet);
-
-            if ((rowCounter.GCRetestCount == 0) || (rowCounter.GCRetestCount == 1))
-            {
-                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 2, int.Parse(excelDataModel_get.YieldSheet_GC_Input));
-                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 3, int.Parse(excelDataModel_get.YieldSheet_GC_Pass));
-                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 4, int.Parse(excelDataModel_get.YieldSheet_GC_Fail));
-                sheet.GetRow(GCindex).GetCell(5).SetCellFormula(String.Format("D{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
-            }
-            else
-            {
-                ReviseExcelValue(SheetEnum.yieldSheet, GCindex, 2, int.Parse(excelDataModel_get.YieldSheet_GC_Input));
-                ReviseExcelValue(SheetEnum.yieldSheet, GCindex, 3, int.Parse(excelDataModel_get.YieldSheet_GC_Pass));
-                ReviseExcelValue(SheetEnum.yieldSheet, GCindex, 4, int.Parse(excelDataModel_get.YieldSheet_GC_Fail));
-
-                //string a = String.Format("D{0:G}/C{1:G}", GCindex, GCindex);
-                sheet.GetRow(GCindex).GetCell(5).SetCellFormula(String.Format("D{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
-
-                sheet.ShiftRows(FFindex, sheet.LastRowNum, rowCounter.GCFailCount - 1, true, false);
-                FFindex += rowCounter.GCFailCount - 1;
-                GTindex += rowCounter.GCFailCount - 1;
-                GT2index += rowCounter.GCFailCount - 1;
-                CellRangeAddress region;
-
-                for (int i = 1; i <= rowCounter.GCFailCount - 1; i++)
-                {
-                    sheet.CreateRow(GCindex + i);
-                }
-
-                for (int j = 0; j < 10; j++)
-                {
-                    for (int i = 1; i <= rowCounter.GCFailCount - 1; i++)
-                    {
-                        SetCellBorderStyle(SheetEnum.yieldSheet, GCindex + i, j + 1);
-                    }
-                }
-
-                for (int i = 0; i < 5; i++)
-                {
-                    region = new CellRangeAddress(GCindex, GCindex + rowCounter.GCFailCount - 1, i + 1, i + 1);
-                    sheet.AddMergedRegion(region);
-                }
-            }
-
-            using (FileStream fileStream = File.Open(_filePath, FileMode.Create, FileAccess.Write))
-            {
-                sheet.ForceFormulaRecalculation = true;
-                wb.Write(fileStream);
-            }
-        }
+        
 
         public void SetCellBorderStyle(SheetEnum sheetEnum, int rowindex, int colindex)
         {
