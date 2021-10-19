@@ -55,11 +55,14 @@ namespace WorkingHelper
             //cell.SetCellValue("测试2");
 
             //初始化ExcelOpreator对象
-            YieldSheetExcelOpreator excelOpreator = new YieldSheetExcelOpreator(FileName);
+            YieldSheetExcelOpreator yieldSheetExcelOpreator = new YieldSheetExcelOpreator(FileName);
+            
             //excelOpreator.ReviseExcelValue(ExcelOpreator.SheetEnum.yieldSheet, 10, 3, "ErenChris");
-            int rowsNum = excelOpreator.GetLastRowIndex(YieldSheetExcelOpreator.SheetEnum.yieldSheet);
+            int rowsNum = yieldSheetExcelOpreator.GetLastRowIndex(YieldSheetExcelOpreator.SheetEnum.yieldSheet);
+            yieldSheetExcelOpreator.YieldSheetFilling(rowCounter, excelDataModel_get, GCRetestUnits, FFRetestUnits, GTRetestUnits, GT2RetestUnits);
 
-            excelOpreator.YieldSheetFilling(rowCounter, excelDataModel_get, GCRetestUnits, FFRetestUnits, GTRetestUnits, GT2RetestUnits);
+            RetestSheetExcelOperator retestSheetExcelOperator = new RetestSheetExcelOperator(FileName);
+            retestSheetExcelOperator.RetestSheetFilling(rowCounter, excelDataModel_get, GCRetestUnits, FFRetestUnits, GTRetestUnits, GT2RetestUnits);
             //using (FileStream FS = new FileStream(Path, FileMode.Create, FileAccess.Write))
             //{
             //    dailyReportWorkBook.Write(FS);
