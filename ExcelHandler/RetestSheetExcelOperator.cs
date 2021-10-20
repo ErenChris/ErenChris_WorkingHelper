@@ -82,11 +82,12 @@ namespace WorkingHelper.ExcelHandler
         {
             ISheet sheet = wb.GetSheetAt((int)SheetEnum.retestSheet);
 
-            if (/*(rowCounter.GCRetestCount == 0) || (rowCounter.GCRetestCount == 1)*/true)
+            if ((rowCounter.GCRetestCount == 0) || (rowCounter.GCRetestCount == 1))
             {
                 ReviseExcelValue(SheetEnum.retestSheet, GCindex, 2, int.Parse(excelDataModel_get.YieldSheet_GC_Input));
                 ReviseExcelValue(SheetEnum.retestSheet, GCindex, 3, int.Parse(excelDataModel_get.RetestSheet_GC_RetestCount));
                 sheet.GetRow(GCindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
+
             }
             else
             {

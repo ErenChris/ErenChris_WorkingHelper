@@ -11,6 +11,7 @@ using HtmlAgilityPack;
 using WorkingHelper.Models;
 using System.Collections.Generic;
 using WorkingHelper.ExcelHandler;
+using System.Configuration;
 
 namespace WorkingHelper
 {
@@ -21,7 +22,8 @@ namespace WorkingHelper
             //获取当前工作路径
             string dir = AppDomain.CurrentDomain.BaseDirectory;
             //被操作Excel文档路径名
-            string FileName = dir + @"Resourse\Template.xlsx";
+            string appConfig_filePath = ConfigurationManager.AppSettings["ExcelPath"];
+            string FileName = dir + appConfig_filePath;
 
             //初始化数据容器List
             List<RetestUnitModel> GCRetestUnits = new List<RetestUnitModel>();

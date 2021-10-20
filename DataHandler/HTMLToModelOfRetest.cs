@@ -64,16 +64,22 @@ namespace WorkingHelper.Handler
                 tempnode = tempDocument.DocumentNode.SelectSingleNode("td[1]");
                 string testresult = tempnode.Attributes["value"].Value;
                 tempModel.RetestUnitSN = testresult;
+
                 tempnode = tempDocument.DocumentNode.SelectSingleNode("td[7]");
                 testresult = tempnode.Attributes["value"].Value;
                 tempModel.RetestStationID = testresult;
+
                 tempnode = tempDocument.DocumentNode.SelectSingleNode("td[10]");
                 testresult = tempnode.Attributes["value"].Value;
                 tempModel.RetestItem = testresult;
-                tempnode = tempDocument.DocumentNode.SelectSingleNode("td[20]");
+
+                tempnode = tempDocument.DocumentNode.SelectSingleNode("td[19]");
                 testresult = tempnode.Attributes["value"].Value;
                 tempModel.UnitConfig = testresult;
 
+                tempnode = tempDocument.DocumentNode.SelectSingleNode("td[20]");
+                testresult = tempnode.Attributes["value"].Value;
+                tempModel.UnitConfig += ("-" + testresult);
 
                 Entity.Add(tempModel);
             }
