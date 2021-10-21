@@ -60,6 +60,19 @@ namespace WorkingHelper.ExcelHandler
             }
         }
 
+        public void ReviseExcelValue(SheetEnum sheetEnum, int rowindex, int colindex, string context)
+        {
+            ISheet sheet = wb.GetSheetAt((int)sheetEnum);
+            IRow row = sheet.GetRow(rowindex);
+            ICell cell = row.GetCell(colindex);
+            cell.SetCellValue(context);
+
+            using (FileStream fileStream = File.Open(_filePath, FileMode.Create, FileAccess.Write))
+            {
+                wb.Write(fileStream);
+            }
+        }
+
         /// <summary>
         /// 设置单元格格式
         /// </summary>
@@ -78,16 +91,39 @@ namespace WorkingHelper.ExcelHandler
             sheet.GetRow(rowindex).CreateCell(colindex).CellStyle = style;
         }
 
+        public List<RetestUnitModel> DeleteNullFailItem(List<RetestUnitModel> retestUnitModel)
+        {
+            for(int i = 0; i < retestUnitModel.Count; i ++)
+            {
+                if(retestUnitModel[i].RetestItem.Trim() == "-")
+                {
+                    retestUnitModel.RemoveAt(i);
+                }
+            }
+
+            return retestUnitModel;
+        }
+
         public void RetestSheetFilling(RowCounter rowCounter, ExcelDataFromSummaryHTMLModel excelDataModel_get, params List<RetestUnitModel>[] retestUnitModels)
         {
             ISheet sheet = wb.GetSheetAt((int)SheetEnum.retestSheet);
 
-            if ((rowCounter.GCRetestCount == 0) || (rowCounter.GCRetestCount == 1))
+            for(int i = 0; i < retestUnitModels.Length; i++)
+            {
+                retestUnitModels[i] = DeleteNullFailItem(retestUnitModels[i]);
+            }
+
+            if ((retestUnitModels[0].Count == 0) || (retestUnitModels[0].Count == 1))
             {
                 ReviseExcelValue(SheetEnum.retestSheet, GCindex, 2, int.Parse(excelDataModel_get.YieldSheet_GC_Input));
-                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 3, int.Parse(excelDataModel_get.RetestSheet_GC_RetestCount));
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 3, retestUnitModels[0].Count);
                 sheet.GetRow(GCindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
-
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 5, retestUnitModels[0].Count);
+                sheet.GetRow(GCindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 7, retestUnitModels[0].First<RetestUnitModel>().RetestItem);
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 8, retestUnitModels[0].First<RetestUnitModel>().RetestStationID);
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 9, retestUnitModels[0].First<RetestUnitModel>().RetestUnitSN);
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 10, retestUnitModels[0].First<RetestUnitModel>().UnitConfig);
             }
             else
             {
