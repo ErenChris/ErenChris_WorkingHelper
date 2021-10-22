@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WorkingHelper.Models;
+using WorkingHelper.Tools;
 
 namespace WorkingHelper.ExcelHandler
 {
@@ -113,6 +114,11 @@ namespace WorkingHelper.ExcelHandler
                 retestUnitModels[i] = DeleteNullFailItem(retestUnitModels[i]);
             }
 
+            Console.WriteLine(GeneralTools.GetRetestItemsCategoryCount(retestUnitModels[0]).ToString());
+            Console.WriteLine(GeneralTools.GetRetestItemsCategoryCount(retestUnitModels[1]).ToString());
+            Console.WriteLine(GeneralTools.GetRetestItemsCategoryCount(retestUnitModels[2]).ToString());
+            Console.WriteLine(GeneralTools.GetRetestItemsCategoryCount(retestUnitModels[3]).ToString());
+
             if ((retestUnitModels[0].Count == 0) || (retestUnitModels[0].Count == 1))
             {
                 ReviseExcelValue(SheetEnum.retestSheet, GCindex, 2, int.Parse(excelDataModel_get.YieldSheet_GC_Input));
@@ -127,12 +133,12 @@ namespace WorkingHelper.ExcelHandler
             }
             else
             {
-                ReviseExcelValue(SheetEnum.yieldSheet, GCindex, 2, int.Parse(excelDataModel_get.YieldSheet_GC_Input));
-                ReviseExcelValue(SheetEnum.yieldSheet, GCindex, 3, int.Parse(excelDataModel_get.YieldSheet_GC_Pass));
-                ReviseExcelValue(SheetEnum.yieldSheet, GCindex, 4, int.Parse(excelDataModel_get.YieldSheet_GC_Fail));
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 2, int.Parse(excelDataModel_get.YieldSheet_GC_Input));
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 3, retestUnitModels[0].Count);
+                sheet.GetRow(GCindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
 
                 //string a = String.Format("D{0:G}/C{1:G}", GCindex, GCindex);
-                sheet.GetRow(GCindex).GetCell(5).SetCellFormula(String.Format("D{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
+                
 
                 sheet.ShiftRows(FFindex, sheet.LastRowNum, rowCounter.GCFailCount - 1, true, false);
                 FFindex += rowCounter.GCFailCount - 1;

@@ -128,6 +128,7 @@
     <Compile Include="DataHandler\WebHandler.cs" />
     <Compile Include="ExcelHandler\RetestSheetExcelOperator.cs" />
     <Compile Include="ExcelHandler\YieldSheetExcelOpreator.cs" />
+    <Compile Include="Tools\GeneralTools.cs" />
     <Compile Include="Models\RetestUnitModel.cs" />
     <Compile Include="Models\ExcelDataFromSummaryHTMLModel.cs" />
     <Compile Include="Models\InformationForWebBrowser.cs" />
