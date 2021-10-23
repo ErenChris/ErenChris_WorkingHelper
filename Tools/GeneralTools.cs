@@ -24,6 +24,21 @@ namespace WorkingHelper.Tools
             return query;
         }
 
+        public static IEnumerable<IGrouping<string, RetestUnitModel>> GetRetestUnitsGroupQueryByStation(List<RetestUnitModel> retestUnitModels)
+        {
+            //int count = 0;
+
+            IEnumerable<IGrouping<string, RetestUnitModel>> query = from retestUnitModel in retestUnitModels
+                                                                    group retestUnitModel by retestUnitModel.RetestStationID;
+
+            //foreach(var group in query)
+            //{
+            //    count += 1;
+            //}
+
+            return query;
+        }
+
         //public static List<RetestUnitModel> GetGroupList(IEnumerable<IGrouping<string, RetestUnitModel>> query)
         //{
         //    List<RetestUnitModel> outPut = new List<RetestUnitModel>();

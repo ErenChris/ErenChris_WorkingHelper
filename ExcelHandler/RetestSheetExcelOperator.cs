@@ -159,26 +159,11 @@ namespace WorkingHelper.ExcelHandler
                 for (int i = 1; i <= retestUnitModels[0].Count - 1; i++)
                 {
                     sheet.CreateRow(GCindex + i);
-                }
-
-                //for (int i = 0; i < GCRetestGroupCount; i++)
-                //{
-                //    for (int j = 0; j < GCRetestUnitsGroupQuery.; j++)
-                //    {
-
-                //    }
-                //}
-                int tempCount = 0;
-                foreach (var group in GCRetestUnitsGroupQuery)
-                {
-                    //分组之后，要填充整行
-                    //填充整行时要遍历单个机台
-                    //对组内机台进行分组
-                    ReviseExcelValue(SheetEnum.retestSheet, GCindex + tempCount, 5, group.Count());
-                    sheet.GetRow(GCindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GCindex + 1 + tempCount, GCindex + 1));
-                    ReviseExcelValue(SheetEnum.retestSheet, GCindex + tempCount, 7, group.Key);
-
-                    tempCount += 1;
+                    for (int j = 1; j < 11; j++)
+                    {
+                        IRow row = sheet.GetRow(GCindex + i);
+                        row.CreateCell(j);
+                    }
                 }
 
                 for (int j = 0; j < 13; j++)
@@ -193,6 +178,71 @@ namespace WorkingHelper.ExcelHandler
                 {
                     region = new CellRangeAddress(GCindex, GCindex + retestUnitModels[0].Count - 1, i + 1, i + 1);
                     sheet.AddMergedRegion(region);
+                }
+
+                //for (int i = 0; i < GCRetestGroupCount; i++)
+                //{
+                //    for (int j = 0; j < GCRetestUnitsGroupQuery.; j++)
+                //    {
+
+                //    }
+                //}
+                int tempCount = 0;
+                List<RetestUnitModel> singleRetestUnit = new List<RetestUnitModel>();
+                foreach (var group in GT2RetestUnitsGroupQuery)
+                {
+                    //分组之后，要填充整行
+                    //填充整行时要遍历单个机台
+                    //对组内机台进行分组
+
+                    //未创建cell实例，引起第二次循环报错(已解决)
+                    ReviseExcelValue(SheetEnum.retestSheet, GCindex + tempCount, 5, group.Count());
+                    sheet.GetRow(GCindex + tempCount).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GCindex + 1 + tempCount, GCindex + 1));
+                    ReviseExcelValue(SheetEnum.retestSheet, GCindex + tempCount, 7, group.Key);
+
+                    if (group.Count() > 1)
+                    {
+                        string strRetestStation = null;
+                        string strRetestSN = null;
+                        string strRetestConfig = null;
+                        int flag = 0;
+
+                        foreach (var i in group)
+                        {
+                            singleRetestUnit.Add(i);
+                        }
+                        IEnumerable<IGrouping<string, RetestUnitModel>> GCRetestUnitsGroupQueryByStation = GeneralTools.GetRetestUnitsGroupQueryByStation(singleRetestUnit);
+                        foreach (var groupByStation in GCRetestUnitsGroupQueryByStation)
+                        {
+                            foreach (var j in groupByStation)
+                            {
+                                if (flag == 0)
+                                {
+                                    strRetestStation += j.RetestStationID;
+                                    strRetestSN += j.RetestUnitSN;
+                                    strRetestConfig += j.UnitConfig;
+                                }
+                                else
+                                {
+                                    strRetestStation = strRetestStation + "\n" + j.RetestUnitSN;
+                                    strRetestSN = strRetestSN + "\n" + j.RetestUnitSN;
+                                    strRetestConfig = strRetestConfig + "\n" + j.UnitConfig;
+                                }
+                                flag += 1;
+                            }
+                        }
+                    }
+                    else
+                    {
+
+                    }
+
+                    if (tempCount != 0)
+                    {
+                        //填写其他信息
+                    }
+
+                    tempCount += 1;
                 }
             }
             #endregion
