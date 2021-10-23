@@ -24,6 +24,25 @@ namespace WorkingHelper.Tools
             return query;
         }
 
+        //public static List<RetestUnitModel> GetGroupList(IEnumerable<IGrouping<string, RetestUnitModel>> query)
+        //{
+        //    List<RetestUnitModel> outPut = new List<RetestUnitModel>();
+
+        //    foreach (var group in query)
+        //    {
+        //        foreach (var item in collection)
+        //        {
+
+        //        }
+        //    }
+        //}
+
+        //public static IEnumerable<IGrouping<string,RetestUnitModel>> GetSameRetestItemsUnitsCategoryGroupQuery(IEnumerable<IGrouping<string,RetestUnitModel>> unitGroup)
+        //{
+        //    foreach
+        //    IEnumerable<IGrouping<string,RetestUnitModel>> query =  from RetestUnitModel
+        //}
+
         public static int GetRetestItemsCategoryCount(string[] strArray)
         {
             return 0;

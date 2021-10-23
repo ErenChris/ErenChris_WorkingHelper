@@ -109,23 +109,25 @@ namespace WorkingHelper.ExcelHandler
         {
             ISheet sheet = wb.GetSheetAt((int)SheetEnum.retestSheet);
 
-            for (int i = 0; i < retestUnitModels.Length; i++)
-            {
-                retestUnitModels[i] = DeleteNullFailItem(retestUnitModels[i]);
-            }
+            //for (int i = 0; i < retestUnitModels.Length; i++)
+            //{
+            //    retestUnitModels[i] = DeleteNullFailItem(retestUnitModels[i]);
+            //}
+
+            //var query = retestUnitModels[3].OrderBy(p => new { p.RetestItem, p.RetestStationID });
 
             IEnumerable<IGrouping<string, RetestUnitModel>> GCRetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[0]);
             IEnumerable<IGrouping<string, RetestUnitModel>> FFRetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[1]);
             IEnumerable<IGrouping<string, RetestUnitModel>> GTRetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[2]);
             IEnumerable<IGrouping<string, RetestUnitModel>> GT2RetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[3]);
-            int GCRetestCount = GCRetestUnitsGroupQuery.Count();
-            int FFRetestCount = FFRetestUnitsGroupQuery.Count();
-            int GTRetestCount = GTRetestUnitsGroupQuery.Count();
-            int GT2RetestCount = GT2RetestUnitsGroupQuery.Count();
-            Console.WriteLine(GCRetestCount.ToString());
-            Console.WriteLine(FFRetestCount.ToString());
-            Console.WriteLine(GTRetestCount.ToString());
-            Console.WriteLine(GT2RetestCount.ToString());
+            int GCRetestGroupCount = GCRetestUnitsGroupQuery.Count();
+            int FFRetestGroupCount = FFRetestUnitsGroupQuery.Count();
+            int GTRetestGroupCount = GTRetestUnitsGroupQuery.Count();
+            int GT2RetestGroupCount = GT2RetestUnitsGroupQuery.Count();
+            Console.WriteLine(GCRetestGroupCount.ToString());
+            Console.WriteLine(FFRetestGroupCount.ToString());
+            Console.WriteLine(GTRetestGroupCount.ToString());
+            Console.WriteLine(GT2RetestGroupCount.ToString());
 
             #region
             if ((retestUnitModels[0].Count == 0) || (retestUnitModels[0].Count == 1))
@@ -157,6 +159,26 @@ namespace WorkingHelper.ExcelHandler
                 for (int i = 1; i <= retestUnitModels[0].Count - 1; i++)
                 {
                     sheet.CreateRow(GCindex + i);
+                }
+
+                //for (int i = 0; i < GCRetestGroupCount; i++)
+                //{
+                //    for (int j = 0; j < GCRetestUnitsGroupQuery.; j++)
+                //    {
+
+                //    }
+                //}
+                int tempCount = 0;
+                foreach (var group in GCRetestUnitsGroupQuery)
+                {
+                    //分组之后，要填充整行
+                    //填充整行时要遍历单个机台
+                    //对组内机台进行分组
+                    ReviseExcelValue(SheetEnum.retestSheet, GCindex + tempCount, 5, group.Count());
+                    sheet.GetRow(GCindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GCindex + 1 + tempCount, GCindex + 1));
+                    ReviseExcelValue(SheetEnum.retestSheet, GCindex + tempCount, 7, group.Key);
+
+                    tempCount += 1;
                 }
 
                 for (int j = 0; j < 13; j++)
