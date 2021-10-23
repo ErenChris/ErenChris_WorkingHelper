@@ -40,8 +40,8 @@ namespace WorkingHelper.ExcelHandler
         public void ReviseExcelValue(SheetEnum sheetEnum, int rowindex, int colindex, string context)
         {
             ISheet sheet = wb.GetSheetAt((int)sheetEnum);
-            IRow row = sheet.GetRow(rowindex - 1);
-            ICell cell = row.GetCell(colindex - 1);
+            IRow row = sheet.GetRow(rowindex);
+            ICell cell = row.GetCell(colindex);
             cell.SetCellValue(context);
 
             using (FileStream fileStream = File.Open(_filePath, FileMode.Create, FileAccess.Write))
@@ -142,6 +142,14 @@ namespace WorkingHelper.ExcelHandler
                 ReviseExcelValue(SheetEnum.yieldSheet, GCindex, 3, int.Parse(excelDataModel_get.YieldSheet_GC_Pass));
                 ReviseExcelValue(SheetEnum.yieldSheet, GCindex, 4, int.Parse(excelDataModel_get.YieldSheet_GC_Fail));
                 sheet.GetRow(GCindex).GetCell(5).SetCellFormula(String.Format("D{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
+
+                if (rowCounter.GCFailCount == 0)
+                {
+                    ReviseExcelValue(SheetEnum.yieldSheet, GCindex, 6, "N/A");
+                    ReviseExcelValue(SheetEnum.yieldSheet, GCindex, 7, "N/A");
+                    ReviseExcelValue(SheetEnum.yieldSheet, GCindex, 8, "N/A");
+                    ReviseExcelValue(SheetEnum.yieldSheet, GCindex, 9, "N/A");
+                }
             }
             else
             {
@@ -184,6 +192,14 @@ namespace WorkingHelper.ExcelHandler
                 ReviseExcelValue(SheetEnum.yieldSheet, FFindex, 3, int.Parse(excelDataModel_get.YieldSheet_FF_Pass));
                 ReviseExcelValue(SheetEnum.yieldSheet, FFindex, 4, int.Parse(excelDataModel_get.YieldSheet_FF_Fail));
                 sheet.GetRow(FFindex).GetCell(5).SetCellFormula(String.Format("D{0:G}/C{1:G}", FFindex + 1, FFindex + 1));
+
+                if (rowCounter.FFFailCount == 0)
+                {
+                    ReviseExcelValue(SheetEnum.yieldSheet, FFindex, 6, "N/A");
+                    ReviseExcelValue(SheetEnum.yieldSheet, FFindex, 7, "N/A");
+                    ReviseExcelValue(SheetEnum.yieldSheet, FFindex, 8, "N/A");
+                    ReviseExcelValue(SheetEnum.yieldSheet, FFindex, 9, "N/A");
+                }
             }
             else
             {
@@ -223,6 +239,14 @@ namespace WorkingHelper.ExcelHandler
                 ReviseExcelValue(SheetEnum.yieldSheet, GTindex, 3, int.Parse(excelDataModel_get.YieldSheet_GT_Pass));
                 ReviseExcelValue(SheetEnum.yieldSheet, GTindex, 4, int.Parse(excelDataModel_get.YieldSheet_GT_Fail));
                 sheet.GetRow(GTindex).GetCell(5).SetCellFormula(String.Format("D{0:G}/C{1:G}", GTindex + 1, GTindex + 1));
+
+                if (rowCounter.GTFailCount == 0)
+                {
+                    ReviseExcelValue(SheetEnum.yieldSheet, GTindex, 6, "N/A");
+                    ReviseExcelValue(SheetEnum.yieldSheet, GTindex, 7, "N/A");
+                    ReviseExcelValue(SheetEnum.yieldSheet, GTindex, 8, "N/A");
+                    ReviseExcelValue(SheetEnum.yieldSheet, GTindex, 9, "N/A");
+                }
             }
             else
             {
@@ -261,6 +285,14 @@ namespace WorkingHelper.ExcelHandler
                 ReviseExcelValue(SheetEnum.yieldSheet, GT2index, 3, int.Parse(excelDataModel_get.YieldSheet_GT2_Pass));
                 ReviseExcelValue(SheetEnum.yieldSheet, GT2index, 4, int.Parse(excelDataModel_get.YieldSheet_GT2_Fail));
                 sheet.GetRow(GT2index).GetCell(5).SetCellFormula(String.Format("D{0:G}/C{1:G}", GT2index + 1, GT2index + 1));
+
+                if (rowCounter.GT2FailCount == 0)
+                {
+                    ReviseExcelValue(SheetEnum.yieldSheet, GT2index, 6, "N/A");
+                    ReviseExcelValue(SheetEnum.yieldSheet, GT2index, 7, "N/A");
+                    ReviseExcelValue(SheetEnum.yieldSheet, GT2index, 8, "N/A");
+                    ReviseExcelValue(SheetEnum.yieldSheet, GT2index, 9, "N/A");
+                }
             }
             else
             {
