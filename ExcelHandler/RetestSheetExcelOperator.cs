@@ -94,9 +94,9 @@ namespace WorkingHelper.ExcelHandler
 
         public List<RetestUnitModel> DeleteNullFailItem(List<RetestUnitModel> retestUnitModel)
         {
-            for(int i = 0; i < retestUnitModel.Count; i ++)
+            for (int i = 0; i < retestUnitModel.Count; i++)
             {
-                if(retestUnitModel[i].RetestItem.Trim() == "-")
+                if (retestUnitModel[i].RetestItem.Trim() == "-")
                 {
                     retestUnitModel.RemoveAt(i);
                 }
@@ -109,16 +109,25 @@ namespace WorkingHelper.ExcelHandler
         {
             ISheet sheet = wb.GetSheetAt((int)SheetEnum.retestSheet);
 
-            for(int i = 0; i < retestUnitModels.Length; i++)
+            for (int i = 0; i < retestUnitModels.Length; i++)
             {
                 retestUnitModels[i] = DeleteNullFailItem(retestUnitModels[i]);
             }
 
-            Console.WriteLine(GeneralTools.GetRetestItemsCategoryCount(retestUnitModels[0]).ToString());
-            Console.WriteLine(GeneralTools.GetRetestItemsCategoryCount(retestUnitModels[1]).ToString());
-            Console.WriteLine(GeneralTools.GetRetestItemsCategoryCount(retestUnitModels[2]).ToString());
-            Console.WriteLine(GeneralTools.GetRetestItemsCategoryCount(retestUnitModels[3]).ToString());
+            IEnumerable<IGrouping<string, RetestUnitModel>> GCRetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[0]);
+            IEnumerable<IGrouping<string, RetestUnitModel>> FFRetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[1]);
+            IEnumerable<IGrouping<string, RetestUnitModel>> GTRetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[2]);
+            IEnumerable<IGrouping<string, RetestUnitModel>> GT2RetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[3]);
+            int GCRetestCount = GCRetestUnitsGroupQuery.Count();
+            int FFRetestCount = FFRetestUnitsGroupQuery.Count();
+            int GTRetestCount = GTRetestUnitsGroupQuery.Count();
+            int GT2RetestCount = GT2RetestUnitsGroupQuery.Count();
+            Console.WriteLine(GCRetestCount.ToString());
+            Console.WriteLine(FFRetestCount.ToString());
+            Console.WriteLine(GTRetestCount.ToString());
+            Console.WriteLine(GT2RetestCount.ToString());
 
+            #region
             if ((retestUnitModels[0].Count == 0) || (retestUnitModels[0].Count == 1))
             {
                 ReviseExcelValue(SheetEnum.retestSheet, GCindex, 2, int.Parse(excelDataModel_get.YieldSheet_GC_Input));
@@ -138,30 +147,75 @@ namespace WorkingHelper.ExcelHandler
                 sheet.GetRow(GCindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
 
                 //string a = String.Format("D{0:G}/C{1:G}", GCindex, GCindex);
-                
 
-                sheet.ShiftRows(FFindex, sheet.LastRowNum, rowCounter.GCFailCount - 1, true, false);
-                FFindex += rowCounter.GCFailCount - 1;
-                GTindex += rowCounter.GCFailCount - 1;
-                GT2index += rowCounter.GCFailCount - 1;
+                sheet.ShiftRows(FFindex, sheet.LastRowNum, retestUnitModels[0].Count - 1, true, false);
+                FFindex += retestUnitModels[0].Count - 1;
+                GTindex += retestUnitModels[0].Count - 1;
+                GT2index += retestUnitModels[0].Count - 1;
                 CellRangeAddress region;
 
-                for (int i = 1; i <= rowCounter.GCFailCount - 1; i++)
+                for (int i = 1; i <= retestUnitModels[0].Count - 1; i++)
                 {
                     sheet.CreateRow(GCindex + i);
                 }
 
-                for (int j = 0; j < 10; j++)
+                for (int j = 0; j < 13; j++)
                 {
-                    for (int i = 1; i <= rowCounter.GCFailCount - 1; i++)
+                    for (int i = 1; i <= retestUnitModels[0].Count - 1; i++)
                     {
-                        SetCellBorderStyle(SheetEnum.yieldSheet, GCindex + i, j + 1);
+                        SetCellBorderStyle(SheetEnum.retestSheet, GCindex + i, j + 1);
                     }
                 }
 
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 4; i++)
                 {
-                    region = new CellRangeAddress(GCindex, GCindex + rowCounter.GCFailCount - 1, i + 1, i + 1);
+                    region = new CellRangeAddress(GCindex, GCindex + retestUnitModels[0].Count - 1, i + 1, i + 1);
+                    sheet.AddMergedRegion(region);
+                }
+            }
+            #endregion
+
+            if ((retestUnitModels[1].Count == 0) || (retestUnitModels[1].Count == 1))
+            {
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 2, int.Parse(excelDataModel_get.YieldSheet_FF_Input));
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 3, retestUnitModels[1].Count);
+                sheet.GetRow(FFindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", FFindex + 1, FFindex + 1));
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 5, retestUnitModels[1].Count);
+                sheet.GetRow(FFindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", FFindex + 1, FFindex + 1));
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 7, retestUnitModels[1].First<RetestUnitModel>().RetestItem);
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 8, retestUnitModels[1].First<RetestUnitModel>().RetestStationID);
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 9, retestUnitModels[1].First<RetestUnitModel>().RetestUnitSN);
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 10, retestUnitModels[1].First<RetestUnitModel>().UnitConfig);
+            }
+            else
+            {
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 2, int.Parse(excelDataModel_get.YieldSheet_FF_Input));
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 3, retestUnitModels[1].Count);
+                sheet.GetRow(FFindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", FFindex + 1, FFindex + 1));
+
+                //string a = String.Format("D{0:G}/C{1:G}", GCindex, GCindex);
+
+                sheet.ShiftRows(GTindex, sheet.LastRowNum, retestUnitModels[1].Count - 1, true, false);
+                GTindex += retestUnitModels[1].Count - 1;
+                GT2index += retestUnitModels[1].Count - 1;
+                CellRangeAddress region;
+
+                for (int i = 1; i <= retestUnitModels[1].Count - 1; i++)
+                {
+                    sheet.CreateRow(FFindex + i);
+                }
+
+                for (int j = 0; j < 13; j++)
+                {
+                    for (int i = 1; i <= retestUnitModels[1].Count - 1; i++)
+                    {
+                        SetCellBorderStyle(SheetEnum.retestSheet, FFindex + i, j + 1);
+                    }
+                }
+
+                for (int i = 0; i < 4; i++)
+                {
+                    region = new CellRangeAddress(FFindex, FFindex + retestUnitModels[1].Count - 1, i + 1, i + 1);
                     sheet.AddMergedRegion(region);
                 }
             }
@@ -170,6 +224,10 @@ namespace WorkingHelper.ExcelHandler
             {
                 sheet.ForceFormulaRecalculation = true;
                 wb.Write(fileStream);
+                GCindex = 3;
+                FFindex = 4;
+                GTindex = 5;
+                GT2index = 6;
             }
         }
     }

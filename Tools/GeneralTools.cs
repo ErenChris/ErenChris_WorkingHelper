@@ -9,19 +9,19 @@ namespace WorkingHelper.Tools
 {
     public static class GeneralTools
     {
-        public static int GetRetestItemsCategoryCount(List<RetestUnitModel> retestUnitModels)
+        public static IEnumerable<IGrouping<string, RetestUnitModel>> GetRetestUnitsGroupQuery(List<RetestUnitModel> retestUnitModels)
         {
-            int count = 0;
+            //int count = 0;
 
             IEnumerable<IGrouping<string, RetestUnitModel>> query = from retestUnitModel in retestUnitModels
                                                                     group retestUnitModel by retestUnitModel.RetestItem;
 
-            foreach(var group in query)
-            {
-                count += 1;
-            }
+            //foreach(var group in query)
+            //{
+            //    count += 1;
+            //}
 
-            return count;
+            return query;
         }
 
         public static int GetRetestItemsCategoryCount(string[] strArray)
