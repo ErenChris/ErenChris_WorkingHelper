@@ -187,18 +187,18 @@ namespace WorkingHelper.ExcelHandler
 
                 //    }
                 //}
-                int tempCount = 0;
+                int GCTempCount = 0;
                 List<RetestUnitModel> singleRetestUnit = new List<RetestUnitModel>();
-                foreach (var group in GT2RetestUnitsGroupQuery)
+                foreach (var group in GCRetestUnitsGroupQuery)
                 {
                     //分组之后，要填充整行
                     //填充整行时要遍历单个机台
                     //对组内机台进行分组
 
                     //未创建cell实例，引起第二次循环报错(已解决)
-                    ReviseExcelValue(SheetEnum.retestSheet, GCindex + tempCount, 5, group.Count());
-                    sheet.GetRow(GCindex + tempCount).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GCindex + 1 + tempCount, GCindex + 1));
-                    ReviseExcelValue(SheetEnum.retestSheet, GCindex + tempCount, 7, group.Key);
+                    ReviseExcelValue(SheetEnum.retestSheet, GCindex + GCTempCount, 5, group.Count());
+                    sheet.GetRow(GCindex + GCTempCount).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GCindex + 1 + GCTempCount, GCindex + 1));
+                    ReviseExcelValue(SheetEnum.retestSheet, GCindex + GCTempCount, 7, group.Key);
 
                     if (group.Count() > 1)
                     {
@@ -218,31 +218,33 @@ namespace WorkingHelper.ExcelHandler
                             {
                                 if (flag == 0)
                                 {
-                                    strRetestStation += j.RetestStationID;
+                                    strRetestStation += j.RetestStationID + String.Format(" x{G:0}",groupByStation.Count());
                                     strRetestSN += j.RetestUnitSN;
                                     strRetestConfig += j.UnitConfig;
                                 }
                                 else
                                 {
-                                    strRetestStation = strRetestStation + "\n" + j.RetestUnitSN;
+                                    strRetestStation = strRetestStation + "\n" + j.RetestStationID;
                                     strRetestSN = strRetestSN + "\n" + j.RetestUnitSN;
                                     strRetestConfig = strRetestConfig + "\n" + j.UnitConfig;
                                 }
                                 flag += 1;
                             }
                         }
+                        ReviseExcelValue(SheetEnum.retestSheet, GCindex + GCTempCount, 8, strRetestStation);
+                        ReviseExcelValue(SheetEnum.retestSheet, GCindex + GCTempCount, 9, strRetestSN);
+                        ReviseExcelValue(SheetEnum.retestSheet, GCindex + GCTempCount, 10, strRetestConfig);
                     }
                     else
                     {
-
+                        foreach (var i in group)
+                        {
+                            ReviseExcelValue(SheetEnum.retestSheet, GCindex + GCTempCount, 8, i.RetestStationID);
+                            ReviseExcelValue(SheetEnum.retestSheet, GCindex + GCTempCount, 9, i.RetestUnitSN);
+                            ReviseExcelValue(SheetEnum.retestSheet, GCindex + GCTempCount, 10, i.UnitConfig);
+                        }
                     }
-
-                    if (tempCount != 0)
-                    {
-                        //填写其他信息
-                    }
-
-                    tempCount += 1;
+                    GCTempCount += 1;
                 }
             }
             #endregion
@@ -272,9 +274,18 @@ namespace WorkingHelper.ExcelHandler
                 GT2index += retestUnitModels[1].Count - 1;
                 CellRangeAddress region;
 
+                //for (int i = 1; i <= retestUnitModels[1].Count - 1; i++)
+                //{
+                //    sheet.CreateRow(FFindex + i);
+                //}
                 for (int i = 1; i <= retestUnitModels[1].Count - 1; i++)
                 {
                     sheet.CreateRow(FFindex + i);
+                    for (int j = 1; j < 11; j++)
+                    {
+                        IRow row = sheet.GetRow(FFindex + i);
+                        row.CreateCell(j);
+                    }
                 }
 
                 for (int j = 0; j < 13; j++)
@@ -289,6 +300,182 @@ namespace WorkingHelper.ExcelHandler
                 {
                     region = new CellRangeAddress(FFindex, FFindex + retestUnitModels[1].Count - 1, i + 1, i + 1);
                     sheet.AddMergedRegion(region);
+                }
+
+                int FFTempCount = 0;
+                List<RetestUnitModel> singleRetestUnit = new List<RetestUnitModel>();
+                foreach (var group in FFRetestUnitsGroupQuery)
+                {
+                    //分组之后，要填充整行
+                    //填充整行时要遍历单个机台
+                    //对组内机台进行分组
+
+                    //未创建cell实例，引起第二次循环报错(已解决)
+                    ReviseExcelValue(SheetEnum.retestSheet, FFindex + FFTempCount, 5, group.Count());
+                    sheet.GetRow(FFindex + FFTempCount).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", FFindex + 1 + FFTempCount, FFindex + 1));
+                    ReviseExcelValue(SheetEnum.retestSheet, FFindex + FFTempCount, 7, group.Key);
+
+                    if (group.Count() > 1)
+                    {
+                        string strRetestStation = null;
+                        string strRetestSN = null;
+                        string strRetestConfig = null;
+                        int flag = 0;
+
+                        foreach (var i in group)
+                        {
+                            singleRetestUnit.Add(i);
+                        }
+                        IEnumerable<IGrouping<string, RetestUnitModel>> FFRetestUnitsGroupQueryByStation = GeneralTools.GetRetestUnitsGroupQueryByStation(singleRetestUnit);
+                        foreach (var groupByStation in FFRetestUnitsGroupQueryByStation)
+                        {
+                            foreach (var j in groupByStation)
+                            {
+                                if (flag == 0)
+                                {
+                                    strRetestStation += j.RetestStationID + String.Format(" x{G:0}", groupByStation.Count());
+                                    strRetestSN += j.RetestUnitSN;
+                                    strRetestConfig += j.UnitConfig;
+                                }
+                                else
+                                {
+                                    strRetestStation = strRetestStation + "\n" + j.RetestStationID;
+                                    strRetestSN = strRetestSN + "\n" + j.RetestUnitSN;
+                                    strRetestConfig = strRetestConfig + "\n" + j.UnitConfig;
+                                }
+                                flag += 1;
+                            }
+                        }
+                        ReviseExcelValue(SheetEnum.retestSheet, FFindex + FFTempCount, 8, strRetestStation);
+                        ReviseExcelValue(SheetEnum.retestSheet, FFindex + FFTempCount, 9, strRetestSN);
+                        ReviseExcelValue(SheetEnum.retestSheet, FFindex + FFTempCount, 10, strRetestConfig);
+                    }
+                    else
+                    {
+                        foreach (var i in group)
+                        {
+                            ReviseExcelValue(SheetEnum.retestSheet, FFindex + FFTempCount, 8, i.RetestStationID);
+                            ReviseExcelValue(SheetEnum.retestSheet, FFindex + FFTempCount, 9, i.RetestUnitSN);
+                            ReviseExcelValue(SheetEnum.retestSheet, FFindex + FFTempCount, 10, i.UnitConfig);
+                        }
+                    }
+                    FFTempCount += 1;
+                }
+            }
+
+            if ((retestUnitModels[2].Count == 0) || (retestUnitModels[2].Count == 1))
+            {
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 2, int.Parse(excelDataModel_get.YieldSheet_GT_Input));
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 3, retestUnitModels[2].Count);
+                sheet.GetRow(GTindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GTindex + 1, GTindex + 1));
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 5, retestUnitModels[2].Count);
+                sheet.GetRow(GTindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GTindex + 1, GTindex + 1));
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 7, retestUnitModels[2].First<RetestUnitModel>().RetestItem);
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 8, retestUnitModels[2].First<RetestUnitModel>().RetestStationID);
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 9, retestUnitModels[2].First<RetestUnitModel>().RetestUnitSN);
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 10, retestUnitModels[2].First<RetestUnitModel>().UnitConfig);
+            }
+            else
+            {
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 2, int.Parse(excelDataModel_get.YieldSheet_GT_Input));
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 3, retestUnitModels[2].Count);
+                sheet.GetRow(GTindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GTindex + 1, GTindex + 1));
+
+                //string a = String.Format("D{0:G}/C{1:G}", GCindex, GCindex);
+
+                sheet.ShiftRows(GT2index, sheet.LastRowNum, retestUnitModels[2].Count - 1, true, false);
+                GT2index += retestUnitModels[2].Count - 1;
+                CellRangeAddress region;
+
+                for (int i = 1; i <= retestUnitModels[2].Count - 1; i++)
+                {
+                    sheet.CreateRow(GTindex + i);
+                    for (int j = 1; j < 11; j++)
+                    {
+                        IRow row = sheet.GetRow(GTindex + i);
+                        row.CreateCell(j);
+                    }
+                }
+
+                for (int j = 0; j < 13; j++)
+                {
+                    for (int i = 1; i <= retestUnitModels[2].Count - 1; i++)
+                    {
+                        SetCellBorderStyle(SheetEnum.retestSheet, GTindex + i, j + 1);
+                    }
+                }
+
+                for (int i = 0; i < 4; i++)
+                {
+                    region = new CellRangeAddress(GTindex, GTindex + retestUnitModels[2].Count - 1, i + 1, i + 1);
+                    sheet.AddMergedRegion(region);
+                }
+
+                //for (int i = 0; i < GCRetestGroupCount; i++)
+                //{
+                //    for (int j = 0; j < GCRetestUnitsGroupQuery.; j++)
+                //    {
+
+                //    }
+                //}
+                int GTTempCount = 0;
+                List<RetestUnitModel> GTSingleRetestUnit = new List<RetestUnitModel>();
+                foreach (var group in GTRetestUnitsGroupQuery)
+                {
+                    //分组之后，要填充整行
+                    //填充整行时要遍历单个机台
+                    //对组内机台进行分组
+
+                    //未创建cell实例，引起第二次循环报错(已解决)
+                    ReviseExcelValue(SheetEnum.retestSheet, GTindex + GTTempCount, 5, group.Count());
+                    sheet.GetRow(GTindex + GTTempCount).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GTindex + 1 + GTTempCount, GTindex + 1));
+                    ReviseExcelValue(SheetEnum.retestSheet, GTindex + GTTempCount, 7, group.Key);
+
+                    if (group.Count() > 1)
+                    {
+                        string strRetestStation = null;
+                        string strRetestSN = null;
+                        string strRetestConfig = null;
+                        int flag = 0;
+
+                        foreach (var i in group)
+                        {
+                            GTSingleRetestUnit.Add(i);
+                        }
+                        IEnumerable<IGrouping<string, RetestUnitModel>> GTRetestUnitsGroupQueryByStation = GeneralTools.GetRetestUnitsGroupQueryByStation(GTSingleRetestUnit);
+                        foreach (var groupByStation in GTRetestUnitsGroupQueryByStation)
+                        {
+                            foreach (var j in groupByStation)
+                            {
+                                if (flag == 0)
+                                {
+                                    strRetestStation += j.RetestStationID + String.Format(" x{G:0}", groupByStation.Count());
+                                    strRetestSN += j.RetestUnitSN;
+                                    strRetestConfig += j.UnitConfig;
+                                }
+                                else
+                                {
+                                    strRetestStation = strRetestStation + "\n" + j.RetestStationID;
+                                    strRetestSN = strRetestSN + "\n" + j.RetestUnitSN;
+                                    strRetestConfig = strRetestConfig + "\n" + j.UnitConfig;
+                                }
+                                flag += 1;
+                            }
+                        }
+                        ReviseExcelValue(SheetEnum.retestSheet, GTindex + GTTempCount, 8, strRetestStation);
+                        ReviseExcelValue(SheetEnum.retestSheet, GTindex + GTTempCount, 9, strRetestSN);
+                        ReviseExcelValue(SheetEnum.retestSheet, GTindex + GTTempCount, 10, strRetestConfig);
+                    }
+                    else
+                    {
+                        foreach (var i in group)
+                        {
+                            ReviseExcelValue(SheetEnum.retestSheet, GTindex + GTTempCount, 8, i.RetestStationID);
+                            ReviseExcelValue(SheetEnum.retestSheet, GTindex + GTTempCount, 9, i.RetestUnitSN);
+                            ReviseExcelValue(SheetEnum.retestSheet, GTindex + GTTempCount, 10, i.UnitConfig);
+                        }
+                    }
+                    GTTempCount += 1;
                 }
             }
 
