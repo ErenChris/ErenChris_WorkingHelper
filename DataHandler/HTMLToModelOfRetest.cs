@@ -75,11 +75,12 @@ namespace WorkingHelper.Handler
 
                 tempnode = tempDocument.DocumentNode.SelectSingleNode("td[19]");
                 testresult = tempnode.Attributes["value"].Value;
-                tempModel.UnitConfig = testresult;
+                string[] sArray = testresult.Split('_');
+                tempModel.UnitConfig = sArray[1];
 
-                tempnode = tempDocument.DocumentNode.SelectSingleNode("td[20]");
-                testresult = tempnode.Attributes["value"].Value;
-                tempModel.UnitConfig += ("-" + testresult);
+                //tempnode = tempDocument.DocumentNode.SelectSingleNode("td[20]");
+                //testresult = tempnode.Attributes["value"].Value;
+                //tempModel.UnitConfig += ("-" + testresult);
 
                 Entity.Add(tempModel);
             }

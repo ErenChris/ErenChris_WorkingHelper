@@ -336,8 +336,6 @@ namespace WorkingHelper.ExcelHandler
             }
         }
 
-        
-
         public void SetCellBorderStyle(SheetEnum sheetEnum, int rowindex, int colindex)
         {
             ISheet sheet = wb.GetSheetAt((int)sheetEnum);

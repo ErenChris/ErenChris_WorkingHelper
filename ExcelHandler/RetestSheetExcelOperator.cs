@@ -108,11 +108,13 @@ namespace WorkingHelper.ExcelHandler
         public void RetestSheetFilling(RowCounter rowCounter, ExcelDataFromSummaryHTMLModel excelDataModel_get, params List<RetestUnitModel>[] retestUnitModels)
         {
             ISheet sheet = wb.GetSheetAt((int)SheetEnum.retestSheet);
+            var resourseRowStyle = sheet.GetRow(GCindex).RowStyle;
+            var resourseRowForSetStyle = sheet.GetRow(GCindex);
 
-            //for (int i = 0; i < retestUnitModels.Length; i++)
-            //{
-            //    retestUnitModels[i] = DeleteNullFailItem(retestUnitModels[i]);
-            //}
+            for (int i = 0; i < retestUnitModels.Length; i++)
+            {
+                retestUnitModels[i] = DeleteNullFailItem(retestUnitModels[i]);
+            }
 
             //var query = retestUnitModels[3].OrderBy(p => new { p.RetestItem, p.RetestStationID });
 
@@ -150,13 +152,13 @@ namespace WorkingHelper.ExcelHandler
 
                 //string a = String.Format("D{0:G}/C{1:G}", GCindex, GCindex);
 
-                sheet.ShiftRows(FFindex, sheet.LastRowNum, retestUnitModels[0].Count - 1, true, false);
-                FFindex += retestUnitModels[0].Count - 1;
-                GTindex += retestUnitModels[0].Count - 1;
-                GT2index += retestUnitModels[0].Count - 1;
+                sheet.ShiftRows(FFindex, sheet.LastRowNum, GCRetestGroupCount - 1, true, false);
+                FFindex += GCRetestGroupCount - 1;
+                GTindex += GCRetestGroupCount - 1;
+                GT2index += GCRetestGroupCount - 1;
                 CellRangeAddress region;
 
-                for (int i = 1; i <= retestUnitModels[0].Count - 1; i++)
+                for (int i = 1; i <= GCRetestGroupCount - 1; i++)
                 {
                     sheet.CreateRow(GCindex + i);
                     for (int j = 1; j < 11; j++)
@@ -166,9 +168,9 @@ namespace WorkingHelper.ExcelHandler
                     }
                 }
 
-                for (int j = 0; j < 13; j++)
+                for (int i = 1; i <= GCRetestGroupCount - 1; i++)
                 {
-                    for (int i = 1; i <= retestUnitModels[0].Count - 1; i++)
+                    for (int j = 0; j < 13; j++)
                     {
                         SetCellBorderStyle(SheetEnum.retestSheet, GCindex + i, j + 1);
                     }
@@ -176,7 +178,7 @@ namespace WorkingHelper.ExcelHandler
 
                 for (int i = 0; i < 4; i++)
                 {
-                    region = new CellRangeAddress(GCindex, GCindex + retestUnitModels[0].Count - 1, i + 1, i + 1);
+                    region = new CellRangeAddress(GCindex, GCindex + GCRetestGroupCount - 1, i + 1, i + 1);
                     sheet.AddMergedRegion(region);
                 }
 
@@ -188,7 +190,7 @@ namespace WorkingHelper.ExcelHandler
                 //    }
                 //}
                 int GCTempCount = 0;
-                List<RetestUnitModel> singleRetestUnit = new List<RetestUnitModel>();
+                List<RetestUnitModel> GCSingleRetestUnit = new List<RetestUnitModel>();
                 foreach (var group in GCRetestUnitsGroupQuery)
                 {
                     //分组之后，要填充整行
@@ -209,27 +211,24 @@ namespace WorkingHelper.ExcelHandler
 
                         foreach (var i in group)
                         {
-                            singleRetestUnit.Add(i);
+                            GCSingleRetestUnit.Add(i);
                         }
-                        IEnumerable<IGrouping<string, RetestUnitModel>> GCRetestUnitsGroupQueryByStation = GeneralTools.GetRetestUnitsGroupQueryByStation(singleRetestUnit);
+                        IEnumerable<IGrouping<string, RetestUnitModel>> GCRetestUnitsGroupQueryByStation = GeneralTools.GetRetestUnitsGroupQueryByStation(GCSingleRetestUnit);
                         foreach (var groupByStation in GCRetestUnitsGroupQueryByStation)
                         {
-                            foreach (var j in groupByStation)
+                            if (flag == 0)
                             {
-                                if (flag == 0)
-                                {
-                                    strRetestStation += j.RetestStationID + String.Format(" x{G:0}",groupByStation.Count());
-                                    strRetestSN += j.RetestUnitSN;
-                                    strRetestConfig += j.UnitConfig;
-                                }
-                                else
-                                {
-                                    strRetestStation = strRetestStation + "\n" + j.RetestStationID;
-                                    strRetestSN = strRetestSN + "\n" + j.RetestUnitSN;
-                                    strRetestConfig = strRetestConfig + "\n" + j.UnitConfig;
-                                }
-                                flag += 1;
+                                strRetestStation += groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
+                                strRetestSN += groupByStation.First().RetestUnitSN;
+                                strRetestConfig += groupByStation.First().UnitConfig;
                             }
+                            else
+                            {
+                                strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID;
+                                strRetestSN = strRetestSN + "\n" + groupByStation.First().RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + groupByStation.First().UnitConfig;
+                            }
+                            flag += 1;
                         }
                         ReviseExcelValue(SheetEnum.retestSheet, GCindex + GCTempCount, 8, strRetestStation);
                         ReviseExcelValue(SheetEnum.retestSheet, GCindex + GCTempCount, 9, strRetestSN);
@@ -245,6 +244,7 @@ namespace WorkingHelper.ExcelHandler
                         }
                     }
                     GCTempCount += 1;
+                    GCSingleRetestUnit.Clear();
                 }
             }
             #endregion
@@ -269,16 +269,16 @@ namespace WorkingHelper.ExcelHandler
 
                 //string a = String.Format("D{0:G}/C{1:G}", GCindex, GCindex);
 
-                sheet.ShiftRows(GTindex, sheet.LastRowNum, retestUnitModels[1].Count - 1, true, false);
-                GTindex += retestUnitModels[1].Count - 1;
-                GT2index += retestUnitModels[1].Count - 1;
+                sheet.ShiftRows(GTindex, sheet.LastRowNum, FFRetestGroupCount - 1, true, false);
+                GTindex += FFRetestGroupCount - 1;
+                GT2index += FFRetestGroupCount - 1;
                 CellRangeAddress region;
 
                 //for (int i = 1; i <= retestUnitModels[1].Count - 1; i++)
                 //{
                 //    sheet.CreateRow(FFindex + i);
                 //}
-                for (int i = 1; i <= retestUnitModels[1].Count - 1; i++)
+                for (int i = 1; i <= FFRetestGroupCount - 1; i++)
                 {
                     sheet.CreateRow(FFindex + i);
                     for (int j = 1; j < 11; j++)
@@ -288,9 +288,9 @@ namespace WorkingHelper.ExcelHandler
                     }
                 }
 
-                for (int j = 0; j < 13; j++)
+                for (int i = 1; i <= FFRetestGroupCount - 1; i++)
                 {
-                    for (int i = 1; i <= retestUnitModels[1].Count - 1; i++)
+                    for (int j = 0; j < 13; j++)
                     {
                         SetCellBorderStyle(SheetEnum.retestSheet, FFindex + i, j + 1);
                     }
@@ -298,12 +298,12 @@ namespace WorkingHelper.ExcelHandler
 
                 for (int i = 0; i < 4; i++)
                 {
-                    region = new CellRangeAddress(FFindex, FFindex + retestUnitModels[1].Count - 1, i + 1, i + 1);
+                    region = new CellRangeAddress(FFindex, FFindex + FFRetestGroupCount - 1, i + 1, i + 1);
                     sheet.AddMergedRegion(region);
                 }
 
                 int FFTempCount = 0;
-                List<RetestUnitModel> singleRetestUnit = new List<RetestUnitModel>();
+                List<RetestUnitModel> FFSingleRetestUnit = new List<RetestUnitModel>();
                 foreach (var group in FFRetestUnitsGroupQuery)
                 {
                     //分组之后，要填充整行
@@ -324,27 +324,24 @@ namespace WorkingHelper.ExcelHandler
 
                         foreach (var i in group)
                         {
-                            singleRetestUnit.Add(i);
+                            FFSingleRetestUnit.Add(i);
                         }
-                        IEnumerable<IGrouping<string, RetestUnitModel>> FFRetestUnitsGroupQueryByStation = GeneralTools.GetRetestUnitsGroupQueryByStation(singleRetestUnit);
+                        IEnumerable<IGrouping<string, RetestUnitModel>> FFRetestUnitsGroupQueryByStation = GeneralTools.GetRetestUnitsGroupQueryByStation(FFSingleRetestUnit);
                         foreach (var groupByStation in FFRetestUnitsGroupQueryByStation)
                         {
-                            foreach (var j in groupByStation)
+                            if (flag == 0)
                             {
-                                if (flag == 0)
-                                {
-                                    strRetestStation += j.RetestStationID + String.Format(" x{G:0}", groupByStation.Count());
-                                    strRetestSN += j.RetestUnitSN;
-                                    strRetestConfig += j.UnitConfig;
-                                }
-                                else
-                                {
-                                    strRetestStation = strRetestStation + "\n" + j.RetestStationID;
-                                    strRetestSN = strRetestSN + "\n" + j.RetestUnitSN;
-                                    strRetestConfig = strRetestConfig + "\n" + j.UnitConfig;
-                                }
-                                flag += 1;
+                                strRetestStation += groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
+                                strRetestSN += groupByStation.First().RetestUnitSN;
+                                strRetestConfig += groupByStation.First().UnitConfig;
                             }
+                            else
+                            {
+                                strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID;
+                                strRetestSN = strRetestSN + "\n" + groupByStation.First().RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + groupByStation.First().UnitConfig;
+                            }
+                            flag += 1;
                         }
                         ReviseExcelValue(SheetEnum.retestSheet, FFindex + FFTempCount, 8, strRetestStation);
                         ReviseExcelValue(SheetEnum.retestSheet, FFindex + FFTempCount, 9, strRetestSN);
@@ -360,6 +357,7 @@ namespace WorkingHelper.ExcelHandler
                         }
                     }
                     FFTempCount += 1;
+                    FFSingleRetestUnit.Clear();
                 }
             }
 
@@ -383,11 +381,11 @@ namespace WorkingHelper.ExcelHandler
 
                 //string a = String.Format("D{0:G}/C{1:G}", GCindex, GCindex);
 
-                sheet.ShiftRows(GT2index, sheet.LastRowNum, retestUnitModels[2].Count - 1, true, false);
+                sheet.ShiftRows(GT2index, sheet.LastRowNum, GTRetestGroupCount - 1, true, false);
                 GT2index += retestUnitModels[2].Count - 1;
                 CellRangeAddress region;
 
-                for (int i = 1; i <= retestUnitModels[2].Count - 1; i++)
+                for (int i = 1; i <= GTRetestGroupCount - 1; i++)
                 {
                     sheet.CreateRow(GTindex + i);
                     for (int j = 1; j < 11; j++)
@@ -397,9 +395,9 @@ namespace WorkingHelper.ExcelHandler
                     }
                 }
 
-                for (int j = 0; j < 13; j++)
+                for (int i = 1; i <= GTRetestGroupCount - 1; i++)
                 {
-                    for (int i = 1; i <= retestUnitModels[2].Count - 1; i++)
+                    for (int j = 0; j < 13; j++)
                     {
                         SetCellBorderStyle(SheetEnum.retestSheet, GTindex + i, j + 1);
                     }
@@ -407,7 +405,7 @@ namespace WorkingHelper.ExcelHandler
 
                 for (int i = 0; i < 4; i++)
                 {
-                    region = new CellRangeAddress(GTindex, GTindex + retestUnitModels[2].Count - 1, i + 1, i + 1);
+                    region = new CellRangeAddress(GTindex, GTindex + GTRetestGroupCount - 1, i + 1, i + 1);
                     sheet.AddMergedRegion(region);
                 }
 
@@ -445,22 +443,19 @@ namespace WorkingHelper.ExcelHandler
                         IEnumerable<IGrouping<string, RetestUnitModel>> GTRetestUnitsGroupQueryByStation = GeneralTools.GetRetestUnitsGroupQueryByStation(GTSingleRetestUnit);
                         foreach (var groupByStation in GTRetestUnitsGroupQueryByStation)
                         {
-                            foreach (var j in groupByStation)
+                            if (flag == 0)
                             {
-                                if (flag == 0)
-                                {
-                                    strRetestStation += j.RetestStationID + String.Format(" x{G:0}", groupByStation.Count());
-                                    strRetestSN += j.RetestUnitSN;
-                                    strRetestConfig += j.UnitConfig;
-                                }
-                                else
-                                {
-                                    strRetestStation = strRetestStation + "\n" + j.RetestStationID;
-                                    strRetestSN = strRetestSN + "\n" + j.RetestUnitSN;
-                                    strRetestConfig = strRetestConfig + "\n" + j.UnitConfig;
-                                }
-                                flag += 1;
+                                strRetestStation += groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
+                                strRetestSN += groupByStation.First().RetestUnitSN;
+                                strRetestConfig += groupByStation.First().UnitConfig;
                             }
+                            else
+                            {
+                                strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID;
+                                strRetestSN = strRetestSN + "\n" + groupByStation.First().RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + groupByStation.First().UnitConfig;
+                            }
+                            flag += 1;
                         }
                         ReviseExcelValue(SheetEnum.retestSheet, GTindex + GTTempCount, 8, strRetestStation);
                         ReviseExcelValue(SheetEnum.retestSheet, GTindex + GTTempCount, 9, strRetestSN);
@@ -476,11 +471,165 @@ namespace WorkingHelper.ExcelHandler
                         }
                     }
                     GTTempCount += 1;
+                    GTSingleRetestUnit.Clear();
                 }
             }
 
+            #region
+            if ((retestUnitModels[3].Count == 0) || (retestUnitModels[3].Count == 1))
+            {
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 2, int.Parse(excelDataModel_get.YieldSheet_GT2_Input));
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 3, retestUnitModels[3].Count);
+                sheet.GetRow(GT2index).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GT2index + 1, GT2index + 1));
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 5, retestUnitModels[3].Count);
+                sheet.GetRow(GT2index).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GT2index + 1, GT2index + 1));
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 7, retestUnitModels[3].First<RetestUnitModel>().RetestItem);
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 8, retestUnitModels[3].First<RetestUnitModel>().RetestStationID);
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 9, retestUnitModels[3].First<RetestUnitModel>().RetestUnitSN);
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 10, retestUnitModels[3].First<RetestUnitModel>().UnitConfig);
+            }
+            else
+            {
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 2, int.Parse(excelDataModel_get.YieldSheet_GT2_Input));
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 3, retestUnitModels[3].Count);
+                sheet.GetRow(GT2index).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GT2index + 1, GT2index + 1));
+
+                //string a = String.Format("D{0:G}/C{1:G}", GCindex, GCindex);
+
+                //sheet.ShiftRows(GT22index, sheet.LastRowNum, retestUnitModels[3].Count - 1, true, false);
+                //GT22index += retestUnitModels[3].Count - 1;
+                CellRangeAddress region;
+
+                for (int i = 1; i <= GT2RetestGroupCount - 1; i++)
+                {
+                    sheet.CreateRow(GT2index + i);
+
+                    for (int j = 1; j < 11; j++)
+                    {
+                        IRow row = sheet.GetRow(GT2index + i);
+                        row.CreateCell(j);
+                    }
+                }
+
+                for (int i = 1; i <= GT2RetestGroupCount - 1; i++)
+                {
+                    for (int j = 0; j < 13; j++)
+                    {
+                        SetCellBorderStyle(SheetEnum.retestSheet, GT2index + i, j + 1);
+                    }
+                }
+
+                for (int i = 0; i < 4; i++)
+                {
+                    region = new CellRangeAddress(GT2index, GT2index + GT2RetestGroupCount - 1, i + 1, i + 1);
+                    sheet.AddMergedRegion(region);
+                }
+
+                //for (int i = 0; i < GCRetestGroupCount; i++)
+                //{
+                //    for (int j = 0; j < GCRetestUnitsGroupQuery.; j++)
+                //    {
+
+                //    }
+                //}
+                int GT2TempCount = 0;
+                List<RetestUnitModel> GT2SingleRetestUnit = new List<RetestUnitModel>();
+                foreach (var group in GT2RetestUnitsGroupQuery)
+                {
+                    //分组之后，要填充整行
+                    //填充整行时要遍历单个机台
+                    //对组内机台进行分组
+
+                    //未创建cell实例，引起第二次循环报错(已解决)
+                    ReviseExcelValue(SheetEnum.retestSheet, GT2index + GT2TempCount, 5, group.Count());
+                    sheet.GetRow(GT2index + GT2TempCount).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GT2index + 1 + GT2TempCount, GT2index + 1));
+                    ReviseExcelValue(SheetEnum.retestSheet, GT2index + GT2TempCount, 7, group.Key);
+
+                    if (group.Count() > 1)
+                    {
+                        string strRetestStation = null;
+                        string strRetestSN = null;
+                        string strRetestConfig = null;
+                        int flag = 0;
+
+                        foreach (var i in group)
+                        {
+                            GT2SingleRetestUnit.Add(i);
+                        }
+                        IEnumerable<IGrouping<string, RetestUnitModel>> GT2RetestUnitsGroupQueryByStation = GeneralTools.GetRetestUnitsGroupQueryByStation(GT2SingleRetestUnit);
+                        foreach (var groupByStation in GT2RetestUnitsGroupQueryByStation)
+                        {
+                            if (flag == 0)
+                            {
+                                strRetestStation += groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
+                                strRetestSN += groupByStation.First().RetestUnitSN;
+                                strRetestConfig += groupByStation.First().UnitConfig;
+                            }
+                            else
+                            {
+                                strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID;
+                                strRetestSN = strRetestSN + "\n" + groupByStation.First().RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + groupByStation.First().UnitConfig;
+                            }
+                            flag += 1;
+                        }
+                        ReviseExcelValue(SheetEnum.retestSheet, GT2index + GT2TempCount, 8, strRetestStation);
+                        ReviseExcelValue(SheetEnum.retestSheet, GT2index + GT2TempCount, 9, strRetestSN);
+                        ReviseExcelValue(SheetEnum.retestSheet, GT2index + GT2TempCount, 10, strRetestConfig);
+                    }
+                    else
+                    {
+                        foreach (var i in group)
+                        {
+                            ReviseExcelValue(SheetEnum.retestSheet, GT2index + GT2TempCount, 8, i.RetestStationID);
+                            ReviseExcelValue(SheetEnum.retestSheet, GT2index + GT2TempCount, 9, i.RetestUnitSN);
+                            ReviseExcelValue(SheetEnum.retestSheet, GT2index + GT2TempCount, 10, i.UnitConfig);
+                        }
+                    }
+                    GT2TempCount += 1;
+                    GT2SingleRetestUnit.Clear();
+                }
+            }
+            #endregion
+
+            //ICellStyle cellStylePercentage = wb.CreateCellStyle();
+            //cellStylePercentage.DataFormat = HSSFDataFormat.GetBuiltinFormat("0.00%");
+
             using (FileStream fileStream = File.Open(_filePath, FileMode.Create, FileAccess.Write))
             {
+                for (int i = 1; i <= (sheet.LastRowNum - GCindex); i++)
+                {
+                    IRow row = sheet.GetRow(GCindex + i);
+                    row.RowStyle = resourseRowStyle;
+                    for (int j = 1; j <= 10; j++)
+                    {
+                        row.GetCell(j).CellStyle = resourseRowForSetStyle.GetCell(j).CellStyle;
+                    }
+                }
+
+                for (int i = 1; i <= 10; i++)
+                {
+                    sheet.AutoSizeColumn(i);
+                }
+                //for (int colNum = 1; colNum <= 10; colNum++)
+                //{
+                //    int colWidth = sheet.GetColumnWidth(colNum) / 256;
+                //    for (int rowNum = 1; rowNum <= sheet.LastRowNum; rowNum++)
+                //    {
+                //        IRow currentRow = sheet.GetRow(rowNum);
+                //        if (currentRow.GetCell(colNum) != null)
+                //        {
+                //            ICell currentCell = currentRow.GetCell(colNum);
+                //            int length = Encoding.Default.GetBytes(currentCell.ToString()).Length;
+                //            if (colWidth < length)
+                //            {
+                //                colWidth = length;
+                //            }
+                //        }
+                //    }
+                //    sheet.SetColumnWidth(colNum, colWidth * 256);
+                //}
+
                 sheet.ForceFormulaRecalculation = true;
                 wb.Write(fileStream);
                 GCindex = 3;
