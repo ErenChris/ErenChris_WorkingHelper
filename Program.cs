@@ -72,17 +72,6 @@ namespace WorkingHelper
 
             Console.WriteLine("Done!");
 
-            //test txt read function
-            //ETextReader TR = new ETextReader(@"D:\Desktop\ALL.txt");
-            //string result = TR.GatTextFile();
-            //HtmlDocumentContainer.LoadHtml(result);
-            //node = HtmlDocumentContainer.GetElementbyId("root");
-            //string test = node.FirstChild.Attributes["class"].Value;
-            //Console.WriteLine(test);
-            //node = HtmlDocumentContainer.DocumentNode.SelectSingleNode(xPath);
-            //string test = node.Attributes["value"].Value;
-            //Console.WriteLine(test);
-
             Console.ReadLine();
         }
     }
