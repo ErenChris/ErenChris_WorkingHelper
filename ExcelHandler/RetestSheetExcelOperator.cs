@@ -128,11 +128,6 @@ namespace WorkingHelper.ExcelHandler
             int GTRetestGroupCount = GTRetestUnitsGroupQuery.Count();
             int GT2RetestGroupCount = GT2RetestUnitsGroupQuery.Count();
 
-            //Console.WriteLine(GCRetestGroupCount.ToString());
-            //Console.WriteLine(FFRetestGroupCount.ToString());
-            //Console.WriteLine(GTRetestGroupCount.ToString());
-            //Console.WriteLine(GT2RetestGroupCount.ToString());
-
             #region
             if ((retestUnitModels[0].Count == 0) || (retestUnitModels[0].Count == 1))
             {
