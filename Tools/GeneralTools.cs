@@ -16,6 +16,12 @@ namespace WorkingHelper.Tools
             IEnumerable<IGrouping<string, RetestUnitModel>> query = from retestUnitModel in retestUnitModels
                                                                     group retestUnitModel by retestUnitModel.RetestItem;
 
+            query = from ordergroup in query
+                    orderby ordergroup.Count()
+                    select ordergroup;
+
+            query = query.Reverse();
+
             //foreach(var group in query)
             //{
             //    count += 1;
@@ -30,6 +36,10 @@ namespace WorkingHelper.Tools
 
             IEnumerable<IGrouping<string, RetestUnitModel>> query = from retestUnitModel in retestUnitModels
                                                                     group retestUnitModel by retestUnitModel.RetestStationID;
+
+            //query = from ordergroup in query
+            //        orderby ordergroup.Count()
+            //        select ordergroup;
 
             //foreach(var group in query)
             //{

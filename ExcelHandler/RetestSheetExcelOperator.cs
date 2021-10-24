@@ -122,14 +122,16 @@ namespace WorkingHelper.ExcelHandler
             IEnumerable<IGrouping<string, RetestUnitModel>> FFRetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[1]);
             IEnumerable<IGrouping<string, RetestUnitModel>> GTRetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[2]);
             IEnumerable<IGrouping<string, RetestUnitModel>> GT2RetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[3]);
+            
             int GCRetestGroupCount = GCRetestUnitsGroupQuery.Count();
             int FFRetestGroupCount = FFRetestUnitsGroupQuery.Count();
             int GTRetestGroupCount = GTRetestUnitsGroupQuery.Count();
             int GT2RetestGroupCount = GT2RetestUnitsGroupQuery.Count();
-            Console.WriteLine(GCRetestGroupCount.ToString());
-            Console.WriteLine(FFRetestGroupCount.ToString());
-            Console.WriteLine(GTRetestGroupCount.ToString());
-            Console.WriteLine(GT2RetestGroupCount.ToString());
+
+            //Console.WriteLine(GCRetestGroupCount.ToString());
+            //Console.WriteLine(FFRetestGroupCount.ToString());
+            //Console.WriteLine(GTRetestGroupCount.ToString());
+            //Console.WriteLine(GT2RetestGroupCount.ToString());
 
             #region
             if ((retestUnitModels[0].Count == 0) || (retestUnitModels[0].Count == 1))
