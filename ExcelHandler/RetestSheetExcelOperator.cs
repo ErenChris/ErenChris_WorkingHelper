@@ -94,11 +94,15 @@ namespace WorkingHelper.ExcelHandler
 
         public List<RetestUnitModel> DeleteNullFailItem(List<RetestUnitModel> retestUnitModel)
         {
-            for (int i = 0; i < retestUnitModel.Count; i++)
+            int Count = retestUnitModel.Count;
+            int temp = 0;
+
+            for (int i = 0; i < Count; i++)
             {
-                if (retestUnitModel[i].RetestItem.Trim() == "-")
+                if (retestUnitModel[i-temp].RetestItem.Trim() == "-")
                 {
-                    retestUnitModel.RemoveAt(i);
+                    retestUnitModel.RemoveAt(i - temp);
+                    temp += 1;
                 }
             }
 
@@ -122,7 +126,7 @@ namespace WorkingHelper.ExcelHandler
             IEnumerable<IGrouping<string, RetestUnitModel>> FFRetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[1]);
             IEnumerable<IGrouping<string, RetestUnitModel>> GTRetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[2]);
             IEnumerable<IGrouping<string, RetestUnitModel>> GT2RetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[3]);
-            
+
             int GCRetestGroupCount = GCRetestUnitsGroupQuery.Count();
             int FFRetestGroupCount = FFRetestUnitsGroupQuery.Count();
             int GTRetestGroupCount = GTRetestUnitsGroupQuery.Count();
