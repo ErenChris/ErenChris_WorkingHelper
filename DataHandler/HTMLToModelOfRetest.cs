@@ -76,7 +76,14 @@ namespace WorkingHelper.Handler
                 tempnode = tempDocument.DocumentNode.SelectSingleNode("td[19]");
                 testresult = tempnode.Attributes["value"].Value;
                 string[] sArray = testresult.Split('_');
-                tempModel.UnitConfig = sArray[1];
+                try
+                {
+                    tempModel.UnitConfig = sArray[1];
+                }
+                catch (Exception e)
+                {
+
+                }
 
                 //tempnode = tempDocument.DocumentNode.SelectSingleNode("td[20]");
                 //testresult = tempnode.Attributes["value"].Value;

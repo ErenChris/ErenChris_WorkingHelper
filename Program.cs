@@ -25,24 +25,37 @@ namespace WorkingHelper
             string appConfig_filePath = ConfigurationManager.AppSettings["ExcelPath"];
             string FileName = dir + appConfig_filePath;
 
+            //获取Summary界面数据
+            ExcelDataFromSummaryHTMLModel excelDataModel_get;
+            IFillingExcelDataModelFromSummaryHTML fillingExcelDataModelFromHTML = new FillingExcelDataModelFromSummaryHTML();
+            excelDataModel_get = fillingExcelDataModelFromHTML.StartCheckStation();
+            //读取重测数据，生成Excel时使用
+
             //初始化数据容器List
             List<RetestUnitModel> GCRetestUnits = new List<RetestUnitModel>();
             List<RetestUnitModel> FFRetestUnits = new List<RetestUnitModel>();
             List<RetestUnitModel> GTRetestUnits = new List<RetestUnitModel>();
             List<RetestUnitModel> GT2RetestUnits = new List<RetestUnitModel>();
             //获取重测机台数据存储于数据容器中
-            GCRetestUnits = HTMLToModelOfRetest.GetRetestUnitList(GCRetestUnits, "GC");
-            FFRetestUnits = HTMLToModelOfRetest.GetRetestUnitList(FFRetestUnits, "FF");
-            GTRetestUnits = HTMLToModelOfRetest.GetRetestUnitList(GTRetestUnits, "GT");
-            GT2RetestUnits = HTMLToModelOfRetest.GetRetestUnitList(GT2RetestUnits, "GT2");
 
-            //获取Summary界面数据
-            ExcelDataFromSummaryHTMLModel excelDataModel_get;
-            IFillingExcelDataModelFromSummaryHTML fillingExcelDataModelFromHTML = new FillingExcelDataModelFromSummaryHTML();
-            excelDataModel_get = fillingExcelDataModelFromHTML.StartCheckStation();
-            //读取重测数据，生成Excel时使用
+            if (int.Parse(excelDataModel_get.RetestSheet_GC_RetestCount) != 0)
+            {
+                GCRetestUnits = HTMLToModelOfRetest.GetRetestUnitList(GCRetestUnits, "GC");
+            }
+            if (int.Parse(excelDataModel_get.RetestSheet_FF_RetestCount) != 0)
+            {
+                FFRetestUnits = HTMLToModelOfRetest.GetRetestUnitList(FFRetestUnits, "FF");
+            }
+            if (int.Parse(excelDataModel_get.RetestSheet_GT_RetestCount) != 0)
+            {
+                GTRetestUnits = HTMLToModelOfRetest.GetRetestUnitList(GTRetestUnits, "GT");
+            }
+            if (int.Parse(excelDataModel_get.RetestSheet_GT2_RetestCount) != 0)
+            {
+                GT2RetestUnits = HTMLToModelOfRetest.GetRetestUnitList(GT2RetestUnits, "GT2");
+            }
+
             RowCounter rowCounter = new RowCounter(GCRetestUnits, FFRetestUnits, GTRetestUnits, GT2RetestUnits, excelDataModel_get);
-
             //string Path = @"D:\Desktop\111.xlsx";
             //HtmlDocument HtmlDocumentContainer = new HtmlDocument();
             //HtmlNode node;
@@ -58,7 +71,7 @@ namespace WorkingHelper
 
             //初始化ExcelOpreator对象
             YieldSheetExcelOpreator yieldSheetExcelOpreator = new YieldSheetExcelOpreator(FileName);
-            
+
             //excelOpreator.ReviseExcelValue(ExcelOpreator.SheetEnum.yieldSheet, 10, 3, "ErenChris");
             int rowsNum = yieldSheetExcelOpreator.GetLastRowIndex(YieldSheetExcelOpreator.SheetEnum.yieldSheet);
             yieldSheetExcelOpreator.YieldSheetFilling(rowCounter, excelDataModel_get, GCRetestUnits, FFRetestUnits, GTRetestUnits, GT2RetestUnits);
