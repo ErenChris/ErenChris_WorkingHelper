@@ -152,10 +152,9 @@ namespace WorkingHelper.ExcelHandler
                 string strRetestConfig = null;
                 if (GCRetestUnitsGroupQuery.First().Count() == 1)
                 {
-                    ReviseExcelValue(SheetEnum.retestSheet, GCindex, 7, GCRetestUnitsGroupQuery.First().First().RetestItem);
-                    ReviseExcelValue(SheetEnum.retestSheet, GCindex, 8, GCRetestUnitsGroupQuery.First().First().RetestStationID);
-                    ReviseExcelValue(SheetEnum.retestSheet, GCindex, 9, GCRetestUnitsGroupQuery.First().First().RetestUnitSN);
-                    ReviseExcelValue(SheetEnum.retestSheet, GCindex, 10, GCRetestUnitsGroupQuery.First().First().UnitConfig);
+                    strRetestStation = GCRetestUnitsGroupQuery.First().First().RetestStationID;
+                    strRetestSN = GCRetestUnitsGroupQuery.First().First().RetestUnitSN;
+                    strRetestConfig = GCRetestUnitsGroupQuery.First().First().UnitConfig;
                 }
                 else
                 {
@@ -367,10 +366,9 @@ namespace WorkingHelper.ExcelHandler
                 string strRetestConfig = null;
                 if (FFRetestUnitsGroupQuery.First().Count() == 1)
                 {
-                    ReviseExcelValue(SheetEnum.retestSheet, FFindex, 7, FFRetestUnitsGroupQuery.First().First().RetestItem);
-                    ReviseExcelValue(SheetEnum.retestSheet, FFindex, 8, FFRetestUnitsGroupQuery.First().First().RetestStationID);
-                    ReviseExcelValue(SheetEnum.retestSheet, FFindex, 9, FFRetestUnitsGroupQuery.First().First().RetestUnitSN);
-                    ReviseExcelValue(SheetEnum.retestSheet, FFindex, 10, FFRetestUnitsGroupQuery.First().First().UnitConfig);
+                    strRetestStation = FFRetestUnitsGroupQuery.First().First().RetestStationID;
+                    strRetestSN = FFRetestUnitsGroupQuery.First().First().RetestUnitSN;
+                    strRetestConfig = FFRetestUnitsGroupQuery.First().First().UnitConfig;
                 }
                 else
                 {
@@ -577,10 +575,9 @@ namespace WorkingHelper.ExcelHandler
                 string strRetestConfig = null;
                 if (GTRetestUnitsGroupQuery.First().Count() == 1)
                 {
-                    ReviseExcelValue(SheetEnum.retestSheet, GTindex, 7, GTRetestUnitsGroupQuery.First().First().RetestItem);
-                    ReviseExcelValue(SheetEnum.retestSheet, GTindex, 8, GTRetestUnitsGroupQuery.First().First().RetestStationID);
-                    ReviseExcelValue(SheetEnum.retestSheet, GTindex, 9, GTRetestUnitsGroupQuery.First().First().RetestUnitSN);
-                    ReviseExcelValue(SheetEnum.retestSheet, GTindex, 10, GTRetestUnitsGroupQuery.First().First().UnitConfig);
+                    strRetestStation = GTRetestUnitsGroupQuery.First().First().RetestStationID;
+                    strRetestSN = GTRetestUnitsGroupQuery.First().First().RetestUnitSN;
+                    strRetestConfig = GTRetestUnitsGroupQuery.First().First().UnitConfig;
                 }
                 else
                 {
@@ -790,10 +787,9 @@ namespace WorkingHelper.ExcelHandler
                 string strRetestConfig = null;
                 if (GT2RetestUnitsGroupQuery.First().Count() == 1)
                 {
-                    ReviseExcelValue(SheetEnum.retestSheet, GT2index, 7, GT2RetestUnitsGroupQuery.First().First().RetestItem);
-                    ReviseExcelValue(SheetEnum.retestSheet, GT2index, 8, GT2RetestUnitsGroupQuery.First().First().RetestStationID);
-                    ReviseExcelValue(SheetEnum.retestSheet, GT2index, 9, GT2RetestUnitsGroupQuery.First().First().RetestUnitSN);
-                    ReviseExcelValue(SheetEnum.retestSheet, GT2index, 10, GT2RetestUnitsGroupQuery.First().First().UnitConfig);
+                    strRetestStation = GT2RetestUnitsGroupQuery.First().First().RetestStationID;
+                    strRetestSN = GT2RetestUnitsGroupQuery.First().First().RetestUnitSN;
+                    strRetestConfig = GT2RetestUnitsGroupQuery.First().First().UnitConfig;
                 }
                 else
                 {
