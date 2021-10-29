@@ -41,6 +41,11 @@ namespace WorkingHelper.Tools
             //        orderby ordergroup.Count()
             //        select ordergroup;
 
+            query = from ordergroup in query
+                    orderby ordergroup.Count()
+                    select ordergroup;
+
+            query = query.Reverse();
             //foreach(var group in query)
             //{
             //    count += 1;

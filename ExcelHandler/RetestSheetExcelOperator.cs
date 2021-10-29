@@ -94,11 +94,15 @@ namespace WorkingHelper.ExcelHandler
 
         public List<RetestUnitModel> DeleteNullFailItem(List<RetestUnitModel> retestUnitModel)
         {
-            for (int i = 0; i < retestUnitModel.Count; i++)
+            int Count = retestUnitModel.Count;
+            int temp = 0;
+
+            for (int i = 0; i < Count; i++)
             {
-                if (retestUnitModel[i].RetestItem.Trim() == "-")
+                if (retestUnitModel[i - temp].RetestItem.Trim() == "-")
                 {
-                    retestUnitModel.RemoveAt(i);
+                    retestUnitModel.RemoveAt(i - temp);
+                    temp += 1;
                 }
             }
 
@@ -122,24 +126,90 @@ namespace WorkingHelper.ExcelHandler
             IEnumerable<IGrouping<string, RetestUnitModel>> FFRetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[1]);
             IEnumerable<IGrouping<string, RetestUnitModel>> GTRetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[2]);
             IEnumerable<IGrouping<string, RetestUnitModel>> GT2RetestUnitsGroupQuery = GeneralTools.GetRetestUnitsGroupQuery(retestUnitModels[3]);
-            
+
+            IEnumerable<IGrouping<string, RetestUnitModel>> GCRetestUnitsGroupQueryByStation_temp = GeneralTools.GetRetestUnitsGroupQueryByStation(retestUnitModels[0]);
+            IEnumerable<IGrouping<string, RetestUnitModel>> FFRetestUnitsGroupQueryByStation_temp = GeneralTools.GetRetestUnitsGroupQueryByStation(retestUnitModels[1]);
+            IEnumerable<IGrouping<string, RetestUnitModel>> GTRetestUnitsGroupQueryByStation_temp = GeneralTools.GetRetestUnitsGroupQueryByStation(retestUnitModels[2]);
+            IEnumerable<IGrouping<string, RetestUnitModel>> GT2RetestUnitsGroupQueryByStation_temp = GeneralTools.GetRetestUnitsGroupQueryByStation(retestUnitModels[3]);
+
             int GCRetestGroupCount = GCRetestUnitsGroupQuery.Count();
             int FFRetestGroupCount = FFRetestUnitsGroupQuery.Count();
             int GTRetestGroupCount = GTRetestUnitsGroupQuery.Count();
             int GT2RetestGroupCount = GT2RetestUnitsGroupQuery.Count();
 
             #region
-            if ((retestUnitModels[0].Count == 0) || (retestUnitModels[0].Count == 1))
+            if (GCRetestGroupCount == 1)
             {
                 ReviseExcelValue(SheetEnum.retestSheet, GCindex, 2, int.Parse(excelDataModel_get.YieldSheet_GC_Input));
                 ReviseExcelValue(SheetEnum.retestSheet, GCindex, 3, retestUnitModels[0].Count);
                 sheet.GetRow(GCindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
                 ReviseExcelValue(SheetEnum.retestSheet, GCindex, 5, retestUnitModels[0].Count);
                 sheet.GetRow(GCindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
-                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 7, retestUnitModels[0].First<RetestUnitModel>().RetestItem);
-                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 8, retestUnitModels[0].First<RetestUnitModel>().RetestStationID);
-                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 9, retestUnitModels[0].First<RetestUnitModel>().RetestUnitSN);
-                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 10, retestUnitModels[0].First<RetestUnitModel>().UnitConfig);
+
+                int flag = 0;
+                string strRetestStation = null;
+                string strRetestSN = null;
+                string strRetestConfig = null;
+                if (GCRetestUnitsGroupQuery.First().Count() == 1)
+                {
+                    strRetestStation = GCRetestUnitsGroupQuery.First().First().RetestStationID;
+                    strRetestSN = GCRetestUnitsGroupQuery.First().First().RetestUnitSN;
+                    strRetestConfig = GCRetestUnitsGroupQuery.First().First().UnitConfig;
+                }
+                else
+                {
+                    foreach (var i in GCRetestUnitsGroupQueryByStation_temp)
+                    {
+                        if (flag == 0)
+                        {
+                            if (i.Count() == 1)
+                            {
+                                strRetestStation += i.First().RetestStationID;
+                                strRetestSN += i.First().RetestUnitSN;
+                                strRetestConfig += i.First().RetestUnitSN;
+                            }
+                            else
+                            {
+                                strRetestStation = i.First().RetestStationID + String.Format("{0:G}", i.Count());
+                                strRetestSN += i.First().RetestUnitSN;
+                                strRetestConfig += i.First().RetestUnitSN;
+                            }
+                            flag += 1;
+                        }
+                        else
+                        {
+                            if (i.Count() == 1)
+                            {
+                                strRetestStation = strRetestStation + "\n" + i.First().RetestStationID;
+                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
+                            }
+                            else
+                            {
+                                strRetestStation = strRetestStation + "\n" + String.Format("{0:G}", i.Count());
+                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
+                            }
+                        }
+                    }
+                }
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 7, GCRetestUnitsGroupQuery.First().First().RetestItem);
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 8, strRetestStation);
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 9, strRetestSN);
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 10, strRetestConfig);
+            }
+            else if (GCRetestGroupCount == 0)
+            {
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 2, int.Parse(excelDataModel_get.YieldSheet_GC_Input));
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 3, retestUnitModels[0].Count);
+                sheet.GetRow(GCindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 5, retestUnitModels[0].Count);
+                sheet.GetRow(GCindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
+
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 7, "N/A");
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 8, "N/A");
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 9, "N/A");
+                ReviseExcelValue(SheetEnum.retestSheet, GCindex, 10, "N/A");
             }
             else
             {
@@ -205,6 +275,7 @@ namespace WorkingHelper.ExcelHandler
                         string strRetestSN = null;
                         string strRetestConfig = null;
                         int flag = 0;
+                        int flag2 = 0;
 
                         foreach (var i in group)
                         {
@@ -215,17 +286,52 @@ namespace WorkingHelper.ExcelHandler
                         {
                             if (flag == 0)
                             {
-                                strRetestStation += groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
-                                strRetestSN += groupByStation.First().RetestUnitSN;
-                                strRetestConfig += groupByStation.First().UnitConfig;
+                                if (groupByStation.Count() != 1)
+                                {
+                                    strRetestStation += groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
+                                    foreach (var i in groupByStation)
+                                    {
+                                        if (flag2 == 0)
+                                        {
+                                            strRetestSN += i.RetestUnitSN;
+                                            strRetestConfig += i.UnitConfig;
+
+                                            flag2 += 1;
+                                        }
+                                        else
+                                        {
+                                            strRetestSN = strRetestSN + "\n" + i.RetestUnitSN;
+                                            strRetestConfig = strRetestConfig + "\n" + i.UnitConfig;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    strRetestStation += groupByStation.First().RetestStationID;
+                                    strRetestSN += groupByStation.First().RetestUnitSN;
+                                    strRetestConfig += groupByStation.First().UnitConfig;
+                                }
+
+                                flag += 1;
                             }
                             else
                             {
-                                strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID;
-                                strRetestSN = strRetestSN + "\n" + groupByStation.First().RetestUnitSN;
-                                strRetestConfig = strRetestConfig + "\n" + groupByStation.First().UnitConfig;
+                                if (groupByStation.Count() != 1)
+                                {
+                                    strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
+                                    foreach (var i in groupByStation)
+                                    {
+                                        strRetestSN = strRetestSN + "\n" + i.RetestUnitSN;
+                                        strRetestConfig = strRetestConfig + "\n" + i.UnitConfig;
+                                    }
+                                }
+                                else
+                                {
+                                    strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID;
+                                    strRetestSN = strRetestSN + "\n" + groupByStation.First().RetestUnitSN;
+                                    strRetestConfig = strRetestConfig + "\n" + groupByStation.First().UnitConfig;
+                                }
                             }
-                            flag += 1;
                         }
                         ReviseExcelValue(SheetEnum.retestSheet, GCindex + GCTempCount, 8, strRetestStation);
                         ReviseExcelValue(SheetEnum.retestSheet, GCindex + GCTempCount, 9, strRetestSN);
@@ -246,17 +352,78 @@ namespace WorkingHelper.ExcelHandler
             }
             #endregion
 
-            if ((retestUnitModels[1].Count == 0) || (retestUnitModels[1].Count == 1))
+            if (FFRetestGroupCount == 1)
             {
                 ReviseExcelValue(SheetEnum.retestSheet, FFindex, 2, int.Parse(excelDataModel_get.YieldSheet_FF_Input));
                 ReviseExcelValue(SheetEnum.retestSheet, FFindex, 3, retestUnitModels[1].Count);
                 sheet.GetRow(FFindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", FFindex + 1, FFindex + 1));
                 ReviseExcelValue(SheetEnum.retestSheet, FFindex, 5, retestUnitModels[1].Count);
                 sheet.GetRow(FFindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", FFindex + 1, FFindex + 1));
-                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 7, retestUnitModels[1].First<RetestUnitModel>().RetestItem);
-                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 8, retestUnitModels[1].First<RetestUnitModel>().RetestStationID);
-                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 9, retestUnitModels[1].First<RetestUnitModel>().RetestUnitSN);
-                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 10, retestUnitModels[1].First<RetestUnitModel>().UnitConfig);
+
+                int flag = 0;
+                string strRetestStation = null;
+                string strRetestSN = null;
+                string strRetestConfig = null;
+                if (FFRetestUnitsGroupQuery.First().Count() == 1)
+                {
+                    strRetestStation = FFRetestUnitsGroupQuery.First().First().RetestStationID;
+                    strRetestSN = FFRetestUnitsGroupQuery.First().First().RetestUnitSN;
+                    strRetestConfig = FFRetestUnitsGroupQuery.First().First().UnitConfig;
+                }
+                else
+                {
+                    foreach (var i in FFRetestUnitsGroupQueryByStation_temp)
+                    {
+                        if (flag == 0)
+                        {
+                            if (i.Count() == 1)
+                            {
+                                strRetestStation += i.First().RetestStationID;
+                                strRetestSN += i.First().RetestUnitSN;
+                                strRetestConfig += i.First().RetestUnitSN;
+                            }
+                            else
+                            {
+                                strRetestStation = i.First().RetestStationID + String.Format("{0:G}", i.Count());
+                                strRetestSN += i.First().RetestUnitSN;
+                                strRetestConfig += i.First().RetestUnitSN;
+                            }
+                            flag += 1;
+                        }
+                        else
+                        {
+                            if (i.Count() == 1)
+                            {
+                                strRetestStation = strRetestStation + "\n" + i.First().RetestStationID;
+                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
+                            }
+                            else
+                            {
+                                strRetestStation = strRetestStation + "\n" + String.Format("{0:G}", i.Count());
+                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
+                            }
+                        }
+                    }
+                }
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 7, FFRetestUnitsGroupQuery.First().First().RetestItem);
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 8, strRetestStation);
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 9, strRetestSN);
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 10, strRetestConfig);
+            }
+            else if (FFRetestGroupCount == 0)
+            {
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 2, int.Parse(excelDataModel_get.YieldSheet_FF_Input));
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 3, retestUnitModels[1].Count);
+                sheet.GetRow(FFindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", FFindex + 1, FFindex + 1));
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 5, retestUnitModels[1].Count);
+                sheet.GetRow(FFindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", FFindex + 1, FFindex + 1));
+
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 7, "N/A");
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 8, "N/A");
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 9, "N/A");
+                ReviseExcelValue(SheetEnum.retestSheet, FFindex, 10, "N/A");
             }
             else
             {
@@ -318,6 +485,7 @@ namespace WorkingHelper.ExcelHandler
                         string strRetestSN = null;
                         string strRetestConfig = null;
                         int flag = 0;
+                        int flag2 = 0;
 
                         foreach (var i in group)
                         {
@@ -328,17 +496,52 @@ namespace WorkingHelper.ExcelHandler
                         {
                             if (flag == 0)
                             {
-                                strRetestStation += groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
-                                strRetestSN += groupByStation.First().RetestUnitSN;
-                                strRetestConfig += groupByStation.First().UnitConfig;
+                                if (groupByStation.Count() != 1)
+                                {
+                                    strRetestStation += groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
+                                    foreach (var i in groupByStation)
+                                    {
+                                        if (flag2 == 0)
+                                        {
+                                            strRetestSN += i.RetestUnitSN;
+                                            strRetestConfig += i.UnitConfig;
+
+                                            flag2 += 1;
+                                        }
+                                        else
+                                        {
+                                            strRetestSN = strRetestSN + "\n" + i.RetestUnitSN;
+                                            strRetestConfig = strRetestConfig + "\n" + i.UnitConfig;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    strRetestStation += groupByStation.First().RetestStationID;
+                                    strRetestSN += groupByStation.First().RetestUnitSN;
+                                    strRetestConfig += groupByStation.First().UnitConfig;
+                                }
+
+                                flag += 1;
                             }
                             else
                             {
-                                strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID;
-                                strRetestSN = strRetestSN + "\n" + groupByStation.First().RetestUnitSN;
-                                strRetestConfig = strRetestConfig + "\n" + groupByStation.First().UnitConfig;
+                                if (groupByStation.Count() != 1)
+                                {
+                                    strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
+                                    foreach (var i in groupByStation)
+                                    {
+                                        strRetestSN = strRetestSN + "\n" + i.RetestUnitSN;
+                                        strRetestConfig = strRetestConfig + "\n" + i.UnitConfig;
+                                    }
+                                }
+                                else
+                                {
+                                    strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID;
+                                    strRetestSN = strRetestSN + "\n" + groupByStation.First().RetestUnitSN;
+                                    strRetestConfig = strRetestConfig + "\n" + groupByStation.First().UnitConfig;
+                                }
                             }
-                            flag += 1;
                         }
                         ReviseExcelValue(SheetEnum.retestSheet, FFindex + FFTempCount, 8, strRetestStation);
                         ReviseExcelValue(SheetEnum.retestSheet, FFindex + FFTempCount, 9, strRetestSN);
@@ -358,17 +561,78 @@ namespace WorkingHelper.ExcelHandler
                 }
             }
 
-            if ((retestUnitModels[2].Count == 0) || (retestUnitModels[2].Count == 1))
+            if (GTRetestGroupCount == 1)
             {
                 ReviseExcelValue(SheetEnum.retestSheet, GTindex, 2, int.Parse(excelDataModel_get.YieldSheet_GT_Input));
                 ReviseExcelValue(SheetEnum.retestSheet, GTindex, 3, retestUnitModels[2].Count);
                 sheet.GetRow(GTindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GTindex + 1, GTindex + 1));
                 ReviseExcelValue(SheetEnum.retestSheet, GTindex, 5, retestUnitModels[2].Count);
                 sheet.GetRow(GTindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GTindex + 1, GTindex + 1));
-                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 7, retestUnitModels[2].First<RetestUnitModel>().RetestItem);
-                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 8, retestUnitModels[2].First<RetestUnitModel>().RetestStationID);
-                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 9, retestUnitModels[2].First<RetestUnitModel>().RetestUnitSN);
-                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 10, retestUnitModels[2].First<RetestUnitModel>().UnitConfig);
+
+                int flag = 0;
+                string strRetestStation = null;
+                string strRetestSN = null;
+                string strRetestConfig = null;
+                if (GTRetestUnitsGroupQuery.First().Count() == 1)
+                {
+                    strRetestStation = GTRetestUnitsGroupQuery.First().First().RetestStationID;
+                    strRetestSN = GTRetestUnitsGroupQuery.First().First().RetestUnitSN;
+                    strRetestConfig = GTRetestUnitsGroupQuery.First().First().UnitConfig;
+                }
+                else
+                {
+                    foreach (var i in GTRetestUnitsGroupQueryByStation_temp)
+                    {
+                        if (flag == 0)
+                        {
+                            if (i.Count() == 1)
+                            {
+                                strRetestStation += i.First().RetestStationID;
+                                strRetestSN += i.First().RetestUnitSN;
+                                strRetestConfig += i.First().RetestUnitSN;
+                            }
+                            else
+                            {
+                                strRetestStation = i.First().RetestStationID + String.Format("{0:G}", i.Count());
+                                strRetestSN += i.First().RetestUnitSN;
+                                strRetestConfig += i.First().RetestUnitSN;
+                            }
+                            flag += 1;
+                        }
+                        else
+                        {
+                            if (i.Count() == 1)
+                            {
+                                strRetestStation = strRetestStation + "\n" + i.First().RetestStationID;
+                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
+                            }
+                            else
+                            {
+                                strRetestStation = strRetestStation + "\n" + String.Format("{0:G}", i.Count());
+                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
+                            }
+                        }
+                    }
+                }
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 7, GTRetestUnitsGroupQuery.First().First().RetestItem);
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 8, strRetestStation);
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 9, strRetestSN);
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 10, strRetestConfig);
+            }
+            else if (GTRetestGroupCount == 0)
+            {
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 2, int.Parse(excelDataModel_get.YieldSheet_GT_Input));
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 3, retestUnitModels[2].Count);
+                sheet.GetRow(GTindex).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GTindex + 1, GTindex + 1));
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 5, retestUnitModels[2].Count);
+                sheet.GetRow(GTindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GTindex + 1, GTindex + 1));
+
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 7, "N/A");
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 8, "N/A");
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 9, "N/A");
+                ReviseExcelValue(SheetEnum.retestSheet, GTindex, 10, "N/A");
             }
             else
             {
@@ -379,7 +643,7 @@ namespace WorkingHelper.ExcelHandler
                 //string a = String.Format("D{0:G}/C{1:G}", GCindex, GCindex);
 
                 sheet.ShiftRows(GT2index, sheet.LastRowNum, GTRetestGroupCount - 1, true, false);
-                GT2index += retestUnitModels[2].Count - 1;
+                GT2index += GTRetestGroupCount - 1;
                 CellRangeAddress region;
 
                 for (int i = 1; i <= GTRetestGroupCount - 1; i++)
@@ -432,6 +696,7 @@ namespace WorkingHelper.ExcelHandler
                         string strRetestSN = null;
                         string strRetestConfig = null;
                         int flag = 0;
+                        int flag2 = 0;
 
                         foreach (var i in group)
                         {
@@ -442,17 +707,52 @@ namespace WorkingHelper.ExcelHandler
                         {
                             if (flag == 0)
                             {
-                                strRetestStation += groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
-                                strRetestSN += groupByStation.First().RetestUnitSN;
-                                strRetestConfig += groupByStation.First().UnitConfig;
+                                if (groupByStation.Count() != 1)
+                                {
+                                    strRetestStation += groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
+                                    foreach (var i in groupByStation)
+                                    {
+                                        if (flag2 == 0)
+                                        {
+                                            strRetestSN += i.RetestUnitSN;
+                                            strRetestConfig += i.UnitConfig;
+
+                                            flag2 += 1;
+                                        }
+                                        else
+                                        {
+                                            strRetestSN = strRetestSN + "\n" + i.RetestUnitSN;
+                                            strRetestConfig = strRetestConfig + "\n" + i.UnitConfig;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    strRetestStation += groupByStation.First().RetestStationID;
+                                    strRetestSN += groupByStation.First().RetestUnitSN;
+                                    strRetestConfig += groupByStation.First().UnitConfig;
+                                }
+
+                                flag += 1;
                             }
                             else
                             {
-                                strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID;
-                                strRetestSN = strRetestSN + "\n" + groupByStation.First().RetestUnitSN;
-                                strRetestConfig = strRetestConfig + "\n" + groupByStation.First().UnitConfig;
+                                if (groupByStation.Count() != 1)
+                                {
+                                    strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
+                                    foreach (var i in groupByStation)
+                                    {
+                                        strRetestSN = strRetestSN + "\n" + i.RetestUnitSN;
+                                        strRetestConfig = strRetestConfig + "\n" + i.UnitConfig;
+                                    }
+                                }
+                                else
+                                {
+                                    strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID;
+                                    strRetestSN = strRetestSN + "\n" + groupByStation.First().RetestUnitSN;
+                                    strRetestConfig = strRetestConfig + "\n" + groupByStation.First().UnitConfig;
+                                }
                             }
-                            flag += 1;
                         }
                         ReviseExcelValue(SheetEnum.retestSheet, GTindex + GTTempCount, 8, strRetestStation);
                         ReviseExcelValue(SheetEnum.retestSheet, GTindex + GTTempCount, 9, strRetestSN);
@@ -473,17 +773,78 @@ namespace WorkingHelper.ExcelHandler
             }
 
             #region
-            if ((retestUnitModels[3].Count == 0) || (retestUnitModels[3].Count == 1))
+            if (GT2RetestGroupCount == 1)
             {
                 ReviseExcelValue(SheetEnum.retestSheet, GT2index, 2, int.Parse(excelDataModel_get.YieldSheet_GT2_Input));
                 ReviseExcelValue(SheetEnum.retestSheet, GT2index, 3, retestUnitModels[3].Count);
                 sheet.GetRow(GT2index).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GT2index + 1, GT2index + 1));
                 ReviseExcelValue(SheetEnum.retestSheet, GT2index, 5, retestUnitModels[3].Count);
                 sheet.GetRow(GT2index).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GT2index + 1, GT2index + 1));
-                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 7, retestUnitModels[3].First<RetestUnitModel>().RetestItem);
-                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 8, retestUnitModels[3].First<RetestUnitModel>().RetestStationID);
-                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 9, retestUnitModels[3].First<RetestUnitModel>().RetestUnitSN);
-                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 10, retestUnitModels[3].First<RetestUnitModel>().UnitConfig);
+
+                int flag = 0;
+                string strRetestStation = null;
+                string strRetestSN = null;
+                string strRetestConfig = null;
+                if (GT2RetestUnitsGroupQuery.First().Count() == 1)
+                {
+                    strRetestStation = GT2RetestUnitsGroupQuery.First().First().RetestStationID;
+                    strRetestSN = GT2RetestUnitsGroupQuery.First().First().RetestUnitSN;
+                    strRetestConfig = GT2RetestUnitsGroupQuery.First().First().UnitConfig;
+                }
+                else
+                {
+                    foreach (var i in GT2RetestUnitsGroupQueryByStation_temp)
+                    {
+                        if (flag == 0)
+                        {
+                            if (i.Count() == 1)
+                            {
+                                strRetestStation += i.First().RetestStationID;
+                                strRetestSN += i.First().RetestUnitSN;
+                                strRetestConfig += i.First().RetestUnitSN;
+                            }
+                            else
+                            {
+                                strRetestStation = i.First().RetestStationID + String.Format("{0:G}", i.Count());
+                                strRetestSN += i.First().RetestUnitSN;
+                                strRetestConfig += i.First().RetestUnitSN;
+                            }
+                            flag += 1;
+                        }
+                        else
+                        {
+                            if (i.Count() == 1)
+                            {
+                                strRetestStation = strRetestStation + "\n" + i.First().RetestStationID;
+                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
+                            }
+                            else
+                            {
+                                strRetestStation = strRetestStation + "\n" + String.Format("{0:G}", i.Count());
+                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
+                            }
+                        }
+                    }
+                }
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 7, GT2RetestUnitsGroupQuery.First().First().RetestItem);
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 8, strRetestStation);
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 9, strRetestSN);
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 10, strRetestConfig);
+            }
+            else if (GT2RetestGroupCount == 0)
+            {
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 2, int.Parse(excelDataModel_get.YieldSheet_GT2_Input));
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 3, retestUnitModels[3].Count);
+                sheet.GetRow(GT2index).GetCell(4).SetCellFormula(String.Format("D{0:G}/C{1:G}", GT2index + 1, GT2index + 1));
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 5, retestUnitModels[3].Count);
+                sheet.GetRow(GT2index).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GT2index + 1, GT2index + 1));
+
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 7, "N/A");
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 8, "N/A");
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 9, "N/A");
+                ReviseExcelValue(SheetEnum.retestSheet, GT2index, 10, "N/A");
             }
             else
             {
@@ -548,6 +909,7 @@ namespace WorkingHelper.ExcelHandler
                         string strRetestSN = null;
                         string strRetestConfig = null;
                         int flag = 0;
+                        int flag2 = 0;
 
                         foreach (var i in group)
                         {
@@ -558,17 +920,52 @@ namespace WorkingHelper.ExcelHandler
                         {
                             if (flag == 0)
                             {
-                                strRetestStation += groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
-                                strRetestSN += groupByStation.First().RetestUnitSN;
-                                strRetestConfig += groupByStation.First().UnitConfig;
+                                if (groupByStation.Count() != 1)
+                                {
+                                    strRetestStation += groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
+                                    foreach (var i in groupByStation)
+                                    {
+                                        if (flag2 == 0)
+                                        {
+                                            strRetestSN += i.RetestUnitSN;
+                                            strRetestConfig += i.UnitConfig;
+
+                                            flag2 += 1;
+                                        }
+                                        else
+                                        {
+                                            strRetestSN = strRetestSN + "\n" + i.RetestUnitSN;
+                                            strRetestConfig = strRetestConfig + "\n" + i.UnitConfig;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    strRetestStation += groupByStation.First().RetestStationID;
+                                    strRetestSN += groupByStation.First().RetestUnitSN;
+                                    strRetestConfig += groupByStation.First().UnitConfig;
+                                }
+
+                                flag += 1;
                             }
                             else
                             {
-                                strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID;
-                                strRetestSN = strRetestSN + "\n" + groupByStation.First().RetestUnitSN;
-                                strRetestConfig = strRetestConfig + "\n" + groupByStation.First().UnitConfig;
+                                if (groupByStation.Count() != 1)
+                                {
+                                    strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID + String.Format(" x{0:G}", groupByStation.Count());
+                                    foreach (var i in groupByStation)
+                                    {
+                                        strRetestSN = strRetestSN + "\n" + i.RetestUnitSN;
+                                        strRetestConfig = strRetestConfig + "\n" + i.UnitConfig;
+                                    }
+                                }
+                                else
+                                {
+                                    strRetestStation = strRetestStation + "\n" + groupByStation.First().RetestStationID;
+                                    strRetestSN = strRetestSN + "\n" + groupByStation.First().RetestUnitSN;
+                                    strRetestConfig = strRetestConfig + "\n" + groupByStation.First().UnitConfig;
+                                }
                             }
-                            flag += 1;
                         }
                         ReviseExcelValue(SheetEnum.retestSheet, GT2index + GT2TempCount, 8, strRetestStation);
                         ReviseExcelValue(SheetEnum.retestSheet, GT2index + GT2TempCount, 9, strRetestSN);
