@@ -147,6 +147,7 @@ namespace WorkingHelper.ExcelHandler
                 sheet.GetRow(GCindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GCindex + 1, GCindex + 1));
 
                 int flag = 0;
+                int flag2 = 0;
                 string strRetestStation = null;
                 string strRetestSN = null;
                 string strRetestConfig = null;
@@ -165,14 +166,10 @@ namespace WorkingHelper.ExcelHandler
                             if (i.Count() == 1)
                             {
                                 strRetestStation += i.First().RetestStationID;
-                                strRetestSN += i.First().RetestUnitSN;
-                                strRetestConfig += i.First().RetestUnitSN;
                             }
                             else
                             {
-                                strRetestStation = i.First().RetestStationID + String.Format("{0:G}", i.Count());
-                                strRetestSN += i.First().RetestUnitSN;
-                                strRetestConfig += i.First().RetestUnitSN;
+                                strRetestStation = i.First().RetestStationID + String.Format(" x{0:G}", i.Count());
                             }
                             flag += 1;
                         }
@@ -181,14 +178,26 @@ namespace WorkingHelper.ExcelHandler
                             if (i.Count() == 1)
                             {
                                 strRetestStation = strRetestStation + "\n" + i.First().RetestStationID;
-                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
-                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
                             }
                             else
                             {
-                                strRetestStation = strRetestStation + "\n" + String.Format("{0:G}", i.Count());
-                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
-                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
+                                strRetestStation = strRetestStation + "\n" + String.Format(" x{0:G}", i.Count());
+                            }
+                        }
+
+                        foreach (var j in i)
+                        {
+                            if (flag2 == 0)
+                            {
+                                strRetestSN += j.RetestUnitSN;
+                                strRetestConfig += j.UnitConfig;
+
+                                flag2 += 1;
+                            }
+                            else
+                            {
+                                strRetestSN = strRetestSN + "\n" + j.RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + j.UnitConfig;
                             }
                         }
                     }
@@ -361,6 +370,7 @@ namespace WorkingHelper.ExcelHandler
                 sheet.GetRow(FFindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", FFindex + 1, FFindex + 1));
 
                 int flag = 0;
+                int flag2 = 0;
                 string strRetestStation = null;
                 string strRetestSN = null;
                 string strRetestConfig = null;
@@ -379,14 +389,10 @@ namespace WorkingHelper.ExcelHandler
                             if (i.Count() == 1)
                             {
                                 strRetestStation += i.First().RetestStationID;
-                                strRetestSN += i.First().RetestUnitSN;
-                                strRetestConfig += i.First().RetestUnitSN;
                             }
                             else
                             {
-                                strRetestStation = i.First().RetestStationID + String.Format("{0:G}", i.Count());
-                                strRetestSN += i.First().RetestUnitSN;
-                                strRetestConfig += i.First().RetestUnitSN;
+                                strRetestStation = i.First().RetestStationID + String.Format(" x{0:G}", i.Count());
                             }
                             flag += 1;
                         }
@@ -395,14 +401,26 @@ namespace WorkingHelper.ExcelHandler
                             if (i.Count() == 1)
                             {
                                 strRetestStation = strRetestStation + "\n" + i.First().RetestStationID;
-                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
-                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
                             }
                             else
                             {
-                                strRetestStation = strRetestStation + "\n" + String.Format("{0:G}", i.Count());
-                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
-                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
+                                strRetestStation = strRetestStation + "\n" + String.Format(" x{0:G}", i.Count());
+                            }
+                        }
+
+                        foreach (var j in i)
+                        {
+                            if (flag2 == 0)
+                            {
+                                strRetestSN += j.RetestUnitSN;
+                                strRetestConfig += j.UnitConfig;
+
+                                flag2 += 1;
+                            }
+                            else
+                            {
+                                strRetestSN = strRetestSN + "\n" + j.RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + j.UnitConfig;
                             }
                         }
                     }
@@ -570,6 +588,7 @@ namespace WorkingHelper.ExcelHandler
                 sheet.GetRow(GTindex).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GTindex + 1, GTindex + 1));
 
                 int flag = 0;
+                int flag2 = 0;
                 string strRetestStation = null;
                 string strRetestSN = null;
                 string strRetestConfig = null;
@@ -588,14 +607,10 @@ namespace WorkingHelper.ExcelHandler
                             if (i.Count() == 1)
                             {
                                 strRetestStation += i.First().RetestStationID;
-                                strRetestSN += i.First().RetestUnitSN;
-                                strRetestConfig += i.First().RetestUnitSN;
                             }
                             else
                             {
-                                strRetestStation = i.First().RetestStationID + String.Format("{0:G}", i.Count());
-                                strRetestSN += i.First().RetestUnitSN;
-                                strRetestConfig += i.First().RetestUnitSN;
+                                strRetestStation = i.First().RetestStationID + String.Format(" x{0:G}", i.Count());
                             }
                             flag += 1;
                         }
@@ -604,14 +619,26 @@ namespace WorkingHelper.ExcelHandler
                             if (i.Count() == 1)
                             {
                                 strRetestStation = strRetestStation + "\n" + i.First().RetestStationID;
-                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
-                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
                             }
                             else
                             {
-                                strRetestStation = strRetestStation + "\n" + String.Format("{0:G}", i.Count());
-                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
-                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
+                                strRetestStation = strRetestStation + "\n" + String.Format(" x{0:G}", i.Count());
+                            }
+                        }
+
+                        foreach (var j in i)
+                        {
+                            if (flag2 == 0)
+                            {
+                                strRetestSN += j.RetestUnitSN;
+                                strRetestConfig += j.UnitConfig;
+
+                                flag2 += 1;
+                            }
+                            else
+                            {
+                                strRetestSN = strRetestSN + "\n" + j.RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + j.UnitConfig;
                             }
                         }
                     }
@@ -782,6 +809,7 @@ namespace WorkingHelper.ExcelHandler
                 sheet.GetRow(GT2index).GetCell(6).SetCellFormula(String.Format("F{0:G}/C{1:G}", GT2index + 1, GT2index + 1));
 
                 int flag = 0;
+                int flag2 = 0;
                 string strRetestStation = null;
                 string strRetestSN = null;
                 string strRetestConfig = null;
@@ -800,14 +828,10 @@ namespace WorkingHelper.ExcelHandler
                             if (i.Count() == 1)
                             {
                                 strRetestStation += i.First().RetestStationID;
-                                strRetestSN += i.First().RetestUnitSN;
-                                strRetestConfig += i.First().RetestUnitSN;
                             }
                             else
                             {
-                                strRetestStation = i.First().RetestStationID + String.Format("{0:G}", i.Count());
-                                strRetestSN += i.First().RetestUnitSN;
-                                strRetestConfig += i.First().RetestUnitSN;
+                                strRetestStation = i.First().RetestStationID + String.Format(" x{0:G}", i.Count());
                             }
                             flag += 1;
                         }
@@ -816,14 +840,26 @@ namespace WorkingHelper.ExcelHandler
                             if (i.Count() == 1)
                             {
                                 strRetestStation = strRetestStation + "\n" + i.First().RetestStationID;
-                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
-                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
                             }
                             else
                             {
-                                strRetestStation = strRetestStation + "\n" + String.Format("{0:G}", i.Count());
-                                strRetestSN = strRetestSN + "\n" + i.First().RetestUnitSN;
-                                strRetestConfig = strRetestConfig + "\n" + i.First().RetestUnitSN;
+                                strRetestStation = strRetestStation + "\n" + String.Format(" x{0:G}", i.Count());
+                            }
+                        }
+
+                        foreach (var j in i)
+                        {
+                            if (flag2 == 0)
+                            {
+                                strRetestSN += j.RetestUnitSN;
+                                strRetestConfig += j.UnitConfig;
+
+                                flag2 += 1;
+                            }
+                            else
+                            {
+                                strRetestSN = strRetestSN + "\n" + j.RetestUnitSN;
+                                strRetestConfig = strRetestConfig + "\n" + j.UnitConfig;
                             }
                         }
                     }
