@@ -137,7 +137,6 @@ namespace WorkingHelper.ExcelHandler
             int GTRetestGroupCount = GTRetestUnitsGroupQuery.Count();
             int GT2RetestGroupCount = GT2RetestUnitsGroupQuery.Count();
 
-            #region
             if (GCRetestGroupCount == 1)
             {
                 ReviseExcelValue(SheetEnum.retestSheet, GCindex, 2, int.Parse(excelDataModel_get.YieldSheet_GC_Input));
@@ -359,7 +358,6 @@ namespace WorkingHelper.ExcelHandler
                     GCSingleRetestUnit.Clear();
                 }
             }
-            #endregion
 
             if (FFRetestGroupCount == 1)
             {
@@ -799,7 +797,6 @@ namespace WorkingHelper.ExcelHandler
                 }
             }
 
-            #region
             if (GT2RetestGroupCount == 1)
             {
                 ReviseExcelValue(SheetEnum.retestSheet, GT2index, 2, int.Parse(excelDataModel_get.YieldSheet_GT2_Input));
@@ -1020,7 +1017,6 @@ namespace WorkingHelper.ExcelHandler
                     GT2SingleRetestUnit.Clear();
                 }
             }
-            #endregion
 
             //ICellStyle cellStylePercentage = wb.CreateCellStyle();
             //cellStylePercentage.DataFormat = HSSFDataFormat.GetBuiltinFormat("0.00%");
